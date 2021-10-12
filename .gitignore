@@ -1,0 +1,35 @@
+#Data
+*.rds
+*.csv
+*.ftr
+*.html
+*.pdf
+*.png
+Public-file-location.txt
+
+#snakemake
+.snakemake
+
+#Jupyter Lab
+.ipynb_checkpoints
+
+#sparklespray
+.kubeque-cached-file-hashes
+.sparkles
+.sparkles-cache
+sparkles.log
+
+# History files
+.Rhistory
+.Rapp.history
+
+# knitr and R markdown default cache directories
+src/R/*_cache/
+src/R/cache/
+src/R/*_files/
+src/R/report/*_cache*
+report_files/*
+
+#MacOS
+.DS_Store
+.gitignore~
