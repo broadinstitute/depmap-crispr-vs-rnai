@@ -1,7 +1,5 @@
 
-library(data.table)
-library(magrittr)
-library(tidyverse)
+# require(ggsci)
 
 #################################### All datasets ####################################
 
@@ -14,10 +12,10 @@ file_dict <- readRDS("/Users/mburger/dynamic-duo-biorxiv/figures/benchmarking/un
 names(file_dict) <- paste0(names(file_dict),"-Mean")
 file_dict <- lapply(file_dict,function(x){t(x)})
 
-proc_dict <- list("CRISPR-Avana"=fread("data/raw/unscaled-crispr-broad-gene-effects.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread("data/raw/unscaled-crispr-sanger-gene-effects.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread("data/raw/unscaled-rnai-drive-gene-effects.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-Achilles"=fread("data/raw/unscaled-rnai-achilles-gene-effects.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+proc_dict <- list("CRISPR-Avana"=fread("data/raw/gene-effect-unscaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "CRISPR-KY"=fread("data/raw/gene-effect-unscaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "RNAi-DRIVE"=fread("data/raw/gene-effect-unscaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "RNAi-Achilles"=fread("data/raw/gene-effect-unscaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
 
 names(proc_dict) <- paste0(names(proc_dict),"-Corrected")
 proc_dict <- lapply(proc_dict,function(x){colnames(x) <- extract_entrez(colnames(x)); return(x)})
@@ -47,11 +45,11 @@ control_scaling <- function(gene_effect_mat,pos_set_ids,neg_set_ids){
 }
 
 #Get non-essential genes
-nonessential.genes <- fread("data/raw/nonessential-genes.csv",sep=",")
+nonessential.genes <- fread("data/raw/control-nonessential-genes.csv",sep=",")
 neg_set_ids <- extract_entrez(nonessential.genes$gene) 
 
 #Get core essential genes
-ceg <- fread("data/raw/essential-genes.csv",sep=",")
+ceg <- fread("data/raw/control-essential-genes-core.csv",sep=",")
 ceg <- ceg$gene
 pos_set_ids <- extract_entrez(ceg)
 
@@ -128,7 +126,7 @@ plot_vals$status[plot_vals$type == "Processed-Processed"] <- "Processed"
 plot_vals$var_bin <- "0-75"
 plot_vals$var_bin[plot_vals$perc_bin == "75-100"] <- "75-100"
 
-mypal = pal_npg()(9)
+mypal = ggsci::pal_npg()(9)
 mypal <- mypal[c(3,9)]
 names(mypal) <- c("Processed","Unprocessed")
 
@@ -148,7 +146,7 @@ ggplot(plot_vals, aes(x=experiment, y=pearson_r, fill=status)) +
   # theme(axis.text.x = element_text(angle = 45)) +
   theme(legend.position = "none") +
   facet_grid(.~var_bin, scales = "free", space = "free") 
-ggsave("figures/selecting_datasets/processed_reagents/gene_cor_byVar.pdf",height=2.5,width=4)
+ggsave("figures/selecting_datasets_proc_vs_unproc_dataset_cor_boxplot.pdf",height=2.5,width=4)
 
 
 

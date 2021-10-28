@@ -122,7 +122,7 @@ ggplot(plot_vals, aes(x=d_label, y=top_cors, fill=status)) +
   scale_fill_manual(values=mypal) +
   theme(legend.title=element_blank()) +
   theme(legend.position = "none") 
-ggsave("figures/selecting_datasets/processed_reagents/numgene_topcor_recall.pdf",height=2.5,width=2.7)
+ggsave("figures/selecting_datasets_proc_vs_unprc_topcor_recall.pdf",height=2.5,width=2.7)
 
 
 

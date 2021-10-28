@@ -6,10 +6,10 @@ source("src/id_utility.R")
 hgnc <- fread("data/raw/hgnc-complete-set.csv")
 
 #Load all unscaled reagent sets
-file_dict <- list("RNAi-Achilles"=fread("data/raw/unscaled-rnai-achilles-lfc.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread("data/raw/unscaled-rnai-drive-lfc.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-Avana"=fread("data/raw/unscaled-crispr-broad-lfc.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread("data/raw/unscaled-crispr-sanger-lfc.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+file_dict <- list("RNAi-Achilles"=fread("data/raw/lfc-unscaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "RNAi-DRIVE"=fread("data/raw/lfc-unscaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "CRISPR-Avana"=fread("data/raw/lfc-unscaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "CRISPR-KY"=fread("data/raw/lfc-unscaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
 
 #filter for cell lines that overlap all 4 datasets
 cls <- lapply(file_dict,function(x){colnames(x)})

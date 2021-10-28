@@ -3,28 +3,23 @@
 # require(ggsci)
 # require(scales)
 # require(grid)
-library(data.table)
-library(magrittr)
-library(tidyverse)
+
 source("src/id_utility.R")
 
 #################################### All datasets ####################################
 
-# hgnc <- load.from.taiga(data.name='hgnc-6825', data.version=2, data.file='hgnc_complete_set_090318')
 hgnc <- fread("data/raw/hgnc-complete-set.csv")
 
-
 #Get reagent mean data for overlapping CLs and genes
-# file_dict <- readRDS("/Users/mburger/dynamic-duo/data/processed/reagent_mean_LFC/reagent_LFC_unscaled_mean_collapsed.rds")
 file_dict <- readRDS("data/processed/mean_reagent_lfc.rds")
 names(file_dict) <- paste0(names(file_dict),"-Mean")
 file_dict <- lapply(file_dict,function(x){t(x)})
 
 # proc_dict <- readRDS("/Users/mburger/dynamic-duo-biorxiv/figures/benchmarking/processed/processed_unscaled_gene_effects.rds")
-proc_dict <- list("CRISPR-Avana"=fread("data/raw/unscaled-crispr-broad-gene-effects.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread("data/raw/unscaled-crispr-sanger-gene-effects.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread("data/raw/unscaled-rnai-drive-gene-effects.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-Achilles"=fread("data/raw/unscaled-rnai-achilles-gene-effects.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+proc_dict <- list("CRISPR-Avana"=fread("data/raw/gene-effect-unscaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "CRISPR-KY"=fread("data/raw/gene-effect-unscaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "RNAi-DRIVE"=fread("data/raw/gene-effect-unscaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "RNAi-Achilles"=fread("data/raw/gene-effect-unscaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
 
 names(proc_dict) <- paste0(names(proc_dict),"-Corrected")
 proc_dict <- lapply(proc_dict,function(x){colnames(x) <- extract_entrez(colnames(x)); return(x)})
@@ -39,16 +34,14 @@ genes <- Reduce(intersect,genes)
 file_dict <- lapply(file_dict,function(x){x[cls,genes]})
 
 #unbiased essential genes
-# gene_set <- load.from.taiga(data.name='unbiased--a77f', data.version=1, data.file='EG_unbiased')
-gene_set <- fread("data/raw/unbiased-essential-genes.csv")
+gene_set <- fread("data/raw/control-essential-genes-unbiased.csv")
 gene_set %<>% subset(.,unbiased_essential)
 gene_set$entrez_id %<>% as.character(.)
 gene_set %<>% subset(., entrez_id %in% genes)
 pos_set_ids <- gene_set$entrez_id
 
 #Get nonexpressed genes
-# tpm <- load.from.taiga(data.name='depmap-rnaseq-expression-data-ccd0', data.version=12, data.file='CCLE_depMap_19Q1_TPM_ProteinCoding')
-tpm <- fread("data/raw/depmap-rnaseq-expression-19q1-tpm-proteincoding.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+tpm <- fread("data/raw/depmap-omics-expression-rnaseq-tpm.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
 cls <- intersect(cls,rownames(tpm))
 genes_exp <- intersect(genes,extract_entrez(colnames(tpm)))
 colnames(tpm) <- extract_entrez(colnames(tpm))
@@ -159,7 +152,7 @@ ggplot(cl_test, aes(x=CL_label, color=dataset,fill=dataset)) +
   geom_hline(data=u_df,aes(yintercept=means,color=dataset)) +
   facet_grid(.~experiment, scales = "free", space = "free")
 
-ggsave("figures/selecting_datasets/processed_reagents/AUC_CLS_comparison_data.pdf",height=3,width=7.6)
+ggsave("figures/selecting_datasets_processed_vs_unproc_AUC.pdf",height=3,width=7.6)
 
 
 

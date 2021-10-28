@@ -1,25 +1,15 @@
 
-library(tidyverse)
-library(magrittr)
 library(ggsci)
-library(ggplot2)
 
 source("src/id_utility.R")
-
-# hgnc <- load.from.taiga(data.name='hgnc-6825', data.version=2, data.file='hgnc_complete_set_090318')
 
 hgnc <- fread("data/raw/hgnc-complete-set.csv")
 
 #Load all reagent sets
-file_dict <- list("RNAi-Achilles"=fread("data/raw/unscaled-rnai-achilles-lfc.csv") %>% column_to_rownames(.,var="V1"),
-                  "RNAi-DRIVE"=fread("data/raw/unscaled-rnai-drive-lfc.csv") %>% column_to_rownames(.,var="V1"),
-                  "CRISPR-Avana"=fread("data/raw/unscaled-crispr-broad-lfc.csv") %>% column_to_rownames(.,var="V1"),
-                  "CRISPR-KY"=fread("data/raw/unscaled-crispr-sanger-lfc.csv") %>% column_to_rownames(.,var="V1"))
-
-#filter for cell lines that overlap all 4 datasets
-# cls <- lapply(file_dict,function(x){colnames(x)})
-# cls <- Reduce(intersect,cls)
-# file_dict <- lapply(file_dict,function(x){x[,cls]})
+file_dict <- list("RNAi-Achilles"=fread("data/raw/lfc-unscaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1"),
+                  "RNAi-DRIVE"=fread("data/raw/lfc-unscaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1"),
+                  "CRISPR-Avana"=fread("data/raw/lfc-unscaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1"),
+                  "CRISPR-KY"=fread("data/raw/lfc-unscaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1"))
 
 #Scale by cell line to reduce correlations driven by batch effects
 file_dict <- lapply(file_dict,function(x){scale(x)})
@@ -134,6 +124,6 @@ ggplot(plot_df,aes(x=median_var_bin,y=median_cor,fill=dataset)) +
   scale_fill_manual(values=mypal) +
   theme(legend.title=element_blank()) +
   theme(legend.position = "none")
-ggsave("figures/selecting_datasets/unprocessed_reagents/pairwise_cors_by_perc_var_boxplot.pdf",height=3,width=3.5)
+ggsave("figures/selecting_datasets_reagents_pairwise_cors_boxplot.pdf",height=3,width=3.5)
 
 
