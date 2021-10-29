@@ -103,3 +103,16 @@ rule dataset_correlation_gene_recall:
 		"figures/selecting_datasets_proc_vs_unprc_topcor_recall.pdf"
 	shell:
 		"Rscript src/selecting_datasets/processed_reagents/numgene_topcor_recall.R"
+
+rule pandependency_per_library:
+	input:
+		"data/raw/gene-effect-scaled-crispr-avana.csv",
+		"data/raw/gene-effect-scaled-crispr-ky.csv",
+		"data/raw/gene-effect-scaled-rnai-achilles.csv",
+		"data/raw/gene-effect-scaled-rnai-drive.csv"
+	output:
+		"data/processed/multilib_ce_percentile_results.csv",
+		"figures/pandependency_90th_percentile_ranks_CRISPR.pdf",
+		"figures/pandependency_90th_percentile_ranks_RNAi.pdf"
+	shell:
+		"Rscript src/high_confidence_dependencies/ce_percentile_ranks_and_hists.R"
