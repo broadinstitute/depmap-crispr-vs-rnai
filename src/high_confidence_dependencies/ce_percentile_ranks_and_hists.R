@@ -13,9 +13,6 @@ gene_scores <- list(all=list(crispr_avana = fread("data/raw/gene-effect-scaled-c
                     crispr_ky = fread("data/raw/gene-effect-scaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
                     rnai_achilles = fread("data/raw/gene-effect-scaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
                     rnai_drive = fread("data/raw/gene-effect-scaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.)))
-                    # overlap=list(ceres=fread("data/raw/gene-effect-scaled-crispr.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                    #              d2=fread("data/raw/gene-effect-scaled-rnai.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.)))
-
 
 ce_percentile <- function(data,quantile_cutoff){
 
@@ -68,54 +65,10 @@ for (gp in names(ranks)){
   }
 }
 
-# results <- bind_rows(ranks[["overlap"]])
-# write_csv(results,"/Users/mburger/dynamic-duo/figures/genedep_profiles/common_essential/Broad_percentile_results.csv")
 results_all <- bind_rows(ranks[["all"]])
 write_csv(results_all,"data/processed/multilib_ce_percentile_results.csv")
 
-##########  Hists for D2-combined and Avana shared cell lines and genes
-# 
-# crispr_ranks <- ranks$overlap$ceres
-# rnai_ranks <-  ranks$overlap$d2
-# 
-# bwidth <- .025
-# ylim_90_crispr <- max(hist(crispr_ranks$rank,breaks=(1/bwidth),plot = F)$counts)
-# ylim_90_rnai <- max(hist(rnai_ranks$rank,breaks=(1/bwidth),plot = F)$counts)
-# ylim_90 <- max(ylim_90_crispr,ylim_90_rnai) + 300
-# 
-# make_ce_hist <- function(ranks_output,tech_name,ylim_upper){
-#   plot_df <- data.frame(values=ranks_output$rank,tech=tech_name,threshold=ranks_output$rank_threshold,stringsAsFactors = F)
-#   plot_df %<>% remove_rownames(.)
-#   ce_bins <- round(ranks_output$rank_threshold[1] / bwidth )
-#   other_bins <- (1 / bwidth ) - ce_bins + 1
-#   
-#   mypal <- c(rep("#bd0026",ce_bins),rep("#fff7ec",other_bins))
-#   
-#   p <- ggplot(data=plot_df,aes(values)) +
-#     geom_histogram(col="black",binwidth = bwidth,fill=mypal) +
-#     scale_x_continuous(breaks=c(0,.2,.4,.6,.8,1)) +
-#     scale_y_continuous(breaks=c(0,300,600,900,1200,1500,1800),limits=c(0,ylim_upper)) +
-#     xlab("") +
-#     ylab("") +
-#     ggtitle(tech_name) +
-#     theme_classic(base_size = 10) +
-#     theme(plot.margin = margin(l=-.5,r=0,unit="cm"))
-#   
-#   return(p)
-# }
-# 
-# crispr_90_plot <- make_ce_hist(crispr_ranks,tech_name = "CRISPR",ylim_upper=ylim_90)
-# rnai_90_plot <- make_ce_hist(rnai_ranks,tech_name = "RNAi",ylim_upper=ylim_90)
-# 
-# p1 <- plot_grid(rnai_90_plot,crispr_90_plot,nrow=1)
-# p2 <- add_sub(p1, "Ranking within 90th Percentile Least Dependent Cell Line", size = 11, vpadding=grid::unit(0,"lines"),y=6, x=0.5, vjust=4.5)
-# p3 <- grid.arrange(textGrob("Number of Genes",x = unit(.5, "npc"),rot=90,gp=gpar(fontsize=11)), p2, ncol=2,widths=c(1,20))
-# ggsave(plot=p3,"/Users/mburger/dynamic-duo/figures/genedep_profiles/common_essential/90th_percentile_ranks.pdf",device="pdf",height=2.5,width=4.5)
-# 
-# nrow(subset(crispr_ranks,CE))
-# nrow(subset(rnai_ranks,CE))
-
-##########  Hists for all 4 datasets run independently & for D2-combined and Avana shared cell lines and genes
+##########  Hists for all 4 datasets run independently 
 
 make_ce_hist <- function(ranks_output,tech_name,ylim_upper,bwidth){
   pandep_count <- nrow(subset(ranks_output,CE))
@@ -143,8 +96,6 @@ make_ce_hist <- function(ranks_output,tech_name,ylim_upper,bwidth){
 
 plot_pairs <- list("CRISPR"=list("Avana"=ranks$all$crispr_avana,"KY"=ranks$all$crispr_ky),
                    "RNAi"=list("Achilles"=ranks$all$rnai_achilles,"DRIVE"=ranks$all$rnai_drive))
-                   # "Overlap"=list("RNAi"=ranks$overlap$d2,"CRISPR"=ranks$overlap$ceres))
-
 
 for (p in names(plot_pairs)){
   

@@ -116,3 +116,17 @@ rule pandependency_per_library:
 		"figures/pandependency_90th_percentile_ranks_RNAi.pdf"
 	shell:
 		"Rscript src/high_confidence_dependencies/ce_percentile_ranks_and_hists.R"
+
+rule pandependency_per_library_benchmarks:
+	input:
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/control-essential-genes-core.csv",
+		"data/raw/control-nonessential-genes.csv",
+		"data/raw/control-essential-genes-CEGv2.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm.csv",
+		"data/processed/multilib_ce_percentile_results.csv"
+	output:
+		"figures/pandependency_90th_percentile_ranks_RNAi_benchmark.pdf",
+		"figures/pandependency_90th_percentile_ranks_CRISPR_benchmark.pdf"
+	shell:
+		"Rscript src/high_confidence_dependencies/pos_neg_cntrl_ce_percentile.R"
