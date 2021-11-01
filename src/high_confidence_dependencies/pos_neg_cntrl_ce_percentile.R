@@ -1,27 +1,29 @@
 
 
-source("src/id_utility.R")
+data_raw <- file.path("data","raw")
+data_processed <- file.path("data","processed")
+source(file.path("src","id_utility.R"))
 
-hgnc <- fread("data/raw/hgnc-complete-set.csv")
+hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 hgnc$entrez_id %<>% as.character(.)
 
 ## RNAi controls
-ceg <- fread("data/raw/control-essential-genes-core.csv",sep=",")
+ceg <- fread(file.path(data_raw,"control-essential-genes-core.csv"),sep=",")
 ceg <- ceg$gene
-neg <- fread("data/raw/control-nonessential-genes.csv",sep=",")
+neg <- fread(file.path(data_raw,"control-nonessential-genes.csv"),sep=",")
 neg <- neg$gene
 
 ## CRISPR controls
-ceg2 <- fread("data/raw/control-essential-genes-CEGv2.csv",sep=",")
+ceg2 <- fread(file.path(data_raw,"control-essential-genes-CEGv2.csv"),sep=",")
 ceg2 <- ceg2$gene
 
-exp <- fread("data/raw/depmap-omics-expression-rnaseq-tpm.csv")
+exp <- fread(file.path(data_raw,"depmap-omics-expression-rnaseq-tpm-19Q1.csv"))
 exp <- exp > .2
 exp_frac <- colSums(exp,na.rm=T) / colSums(!is.na(exp))
 nonexp <- names(exp_frac)[exp_frac < .5]
 
 ## 90th percentile rank results
-pd_score <- fread("data/processed/multilib_ce_percentile_results.csv")
+pd_score <- fread(file.path(data_processed,"multilib_ce_percentile_results.csv"))
 
 ## D2 scores
 achilles <- subset(pd_score,dataset == "rnai_achilles")
@@ -75,7 +77,7 @@ ggplot(rnai_df,aes(x=rank,fill=group)) +
   xlab("Ranking Within 90th Percentile Least Dependent Cell Line") +
   theme(legend.position = c(0.85, 0.7)) +
   facet_grid(. ~ dataset, scales = "free", space = "free")
-ggsave("figures/pandependency_90th_percentile_ranks_RNAi_benchmark.pdf",height=2.5,width=4.5)
+ggsave(file.path("figures","pandependency_90th_percentile_ranks_RNAi_benchmark.pdf"),height=2.5,width=4.5)
 
 ggplot(crispr_df,aes(x=rank,fill=group)) +
   geom_density() +
@@ -85,5 +87,5 @@ ggplot(crispr_df,aes(x=rank,fill=group)) +
   xlab("") +
   theme(legend.position = c(0.85, 0.7)) +
   facet_grid(. ~ dataset, scales = "free", space = "free")
-ggsave("figures/pandependency_90th_percentile_ranks_CRISPR_benchmark.pdf",height=2.5,width=4.5)
+ggsave(file.path("figures","pandependency_90th_percentile_ranks_CRISPR_benchmark.pdf"),height=2.5,width=4.5)
 

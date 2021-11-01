@@ -3,7 +3,9 @@ library(tidyverse)
 library(magrittr)
 library(data.table)
 
-source("/Users/mburger/dynamic-duo/src/R/id_utility.R")
+data_raw <- file.path("data","raw")
+data_processed <- file.path("data","processed")
+source(file.path("src","id_utility.R"))
 
 gene_cor_recall_rank <- function(d1,d2,d1_name,d2_name,hgnc){
   
@@ -51,29 +53,15 @@ gene_cor_recall_rank <- function(d1,d2,d1_name,d2_name,hgnc){
   
 }
 
-# gene_scores <- list(all=list(crispr_avana = load.from.taiga(data.name='avana-public-tentative-19q1-6956', data.version=2, data.file='gene_effect_corrected'),
-#                              crispr_ky = load.from.taiga(data.name='ceres-8a62', data.version=1, data.file='ceres_ky_scaled'),
-#                              rnai_achilles = load.from.taiga(data.name='demeter2-achilles-5386', data.version=13, data.file='gene_effect'),
-#                              rnai_drive = load.from.taiga(data.name='demeter2-drive-0591', data.version=12, data.file='gene_effect')),
-#                     overlap=list(ceres=load.from.taiga(data.name='dependency-data-9cb5', data.version=2, data.file='crispr_gs'),
-#                                  d2=load.from.taiga(data.name='dependency-data-9cb5', data.version=2, data.file='rnai_gs')))
+crispr_ky_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+crispr_avana_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+rnai_achilles_gs <- fread(file.path(data_raw,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+rnai_drive_gs <- fread(file.path(data_raw,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
 
-# crispr_broad_gs <- load.from.taiga(data.name='dependency-data-9cb5', data.version=2, data.file='crispr_gs')
-# rnai_combined_gs <- load.from.taiga(data.name='dependency-data-9cb5', data.version=2, data.file='rnai_gs')
-crispr_ky_gs <- load.from.taiga(data.name='inputs-ef6d', data.version=1, data.file='ceres_ky_scaled')
-crispr_avana_gs <- load.from.taiga(data.name='inputs-ef6d', data.version=1, data.file='gene_effect_corrected')
-rnai_achilles_gs <- load.from.taiga(data.name='inputs-7713', data.version=1, data.file='DEMETER2_Achilles_gene_effect')
-rnai_drive_gs <- load.from.taiga(data.name='inputs-7713', data.version=1, data.file='DEMETER2_DRIVE_gene_effect')
-
-hgnc <- load.from.taiga(data.name='hgnc-6825', data.version=2, data.file='hgnc_complete_set_090318')
+hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 hgnc$entrez_id %<>% as.character()
 
 comparisons <- list(
-  # "CRISPR-RNAi"=list("d1_name"="CRISPR-DepMap",
-  #                    "d2_name"="RNAi-DepMap",
-  #                    "d1"=crispr_broad_gs,
-  #                    "d2"=rnai_combined_gs,
-  #                    "hgnc"=hgnc),
   "CRISPR-CRISPR"=list("d1_name"="CRISPR-Avana",
                        "d2_name"="CRISPR-KY",
                        "d1"=crispr_avana_gs,
@@ -94,8 +82,8 @@ for (comp in names(comparisons)){
                                        d2_name=comp_params[["d2_name"]],
                                        hgnc=comp_params[["hgnc"]])
   
-  outfile <- file.path("/Users/mburger/dynamic-duo-biorxiv/figures/library_agreement",paste0(comp_params[["d1_name"]],"_vs_",comp_params[["d2_name"]],"_cor_recall_vals.csv")) 
-  write_csv(result_table,path=outfile)
+  outfile <- file.path(data_processed,paste0(comp_params[["d1_name"]],"_vs_",comp_params[["d2_name"]],"_cor_recall_vals.csv")) 
+  write_csv(result_table,file=outfile)
   
 }
 

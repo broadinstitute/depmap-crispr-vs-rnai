@@ -1,0 +1,27 @@
+
+rule td_pipeline:
+    input: 
+        results = expand("{analysis}-{dataset}.csv", dataset=config["LIBRARY"], analysis=config["METRIC"])
+
+rule common_essential:
+    input:
+        # gene_effect = lambda wildcards: config[wildcards.dataset]["GS"]
+        gene_effect = "data/raw/gene-effect-scaled-{dataset}.csv"
+    output:
+        outfile_full = "data/processed/pandependency-score-{dataset}.csv",
+        outfile_list = "data/processed/pandependency-{dataset}.csv"
+    shell:
+        "Rscript src/R/CE_percentile_rank_analysis.R {input.gene_effect} {output.outfile_full} {output.outfile_list}"
+
+rule inference:
+    input:
+        # gene_effect = lambda wildcards: config[wildcards.dataset]["GS"],
+        gene_effect = "data/raw/gene-effect-scaled-{dataset}.csv",
+        tpm = "data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv"
+        essential = "data/processed/pandependency-{dataset}.csv",
+        non_essential = "data/raw/control-nonessential-genes.csv"
+    output:
+        pr_outfile = "data/processed/dependency-probability-{dataset}.csv"
+    shell:
+        "python src/InferProbabilities.py --gene-effect {input.gene_effect} --tpm {input.tpm} --pos-cntrl {input.essential} --neg-cntrl {input.non_essential} --pr-outfile {output.pr_outfile}"
+

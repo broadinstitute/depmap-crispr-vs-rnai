@@ -1,0 +1,91 @@
+
+rule reagent_level_SSMD:
+	input:
+		"data/raw/collection.zip"
+		# "data/raw/lfc-unscaled-rnai-achilles.csv",
+		# "data/raw/lfc-unscaled-rnai-drive.csv",
+		# "data/raw/lfc-unscaled-crispr-avana.csv",
+		# "data/raw/lfc-unscaled-crispr-ky.csv",
+		# "data/raw/reagent-to-gene-map-sgrna.csv",
+		# "data/raw/reagent-to-gene-map-shrna.csv",
+		# "data/raw/control-essential-genes-core.csv",
+		# "data/raw/control-nonessential-genes.csv"
+	output:
+		"figures/selecting_datasets_reagents_SSMD_per_dataset.pdf",
+		"figures/selecting_datasets_reagents_SSMD_CL_example.pdf"
+
+	shell:
+		"Rscript src/selecting_datasets/unprocessed_reagents/SSMD_across_CLs.R"
+
+rule reagent_correlation_per_gene:
+	input:
+		"data/raw/collection.zip"
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/lfc-unscaled-rnai-achilles.csv",
+		# "data/raw/lfc-unscaled-rnai-drive.csv",
+		# "data/raw/lfc-unscaled-crispr-avana.csv",
+		# "data/raw/lfc-unscaled-crispr-ky.csv",
+		# "data/raw/reagent-to-gene-map-sgrna.csv",
+		# "data/raw/reagent-to-gene-map-shrna.csv"
+	output:
+		"figures/selecting_datasets_reagents_pairwise_cors_boxplot.pdf"
+	shell:
+		"Rscript src/selecting_datasets/unprocessed_reagents/pairwise_reagent_cor.R"
+
+rule reagent_gene_mean:
+	input:
+		"data/raw/collection.zip"
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/lfc-unscaled-rnai-achilles.csv",
+		# "data/raw/lfc-unscaled-rnai-drive.csv",
+		# "data/raw/lfc-unscaled-crispr-avana.csv",
+		# "data/raw/lfc-unscaled-crispr-ky.csv",
+		# "data/raw/reagent-to-gene-map-sgrna.csv",
+		# "data/raw/reagent-to-gene-map-shrna.csv"
+	output:
+		"data/processed/mean_reagent_lfc.rds"
+	shell:
+		"Rscript src/selecting_datasets/processed_reagents/mean_reagent_lfc.R"
+
+rule gene_effect_AUC:
+	input:
+		"data/processed/mean_reagent_lfc.rds",
+		"data/raw/collection.zip"
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/gene-effect-unscaled-crispr-avana.csv",
+		# "data/raw/gene-effect-unscaled-crispr-ky.csv",
+		# "data/raw/gene-effect-unscaled-rnai-drive.csv",
+		# "data/raw/gene-effect-unscaled-rnai-achilles.csv",
+		# "data/raw/control-essential-genes-unbiased.csv",
+		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
+	output:
+		"figures/selecting_datasets_processed_vs_unproc_AUC.pdf"
+	shell:
+		"Rscript src/selecting_datasets/processed_reagents/AUC_per_cell_line.R"
+
+rule dataset_correlation_per_gene:
+	input:
+		"data/processed/mean_reagent_lfc.rds",
+		"data/raw/collection.zip"
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/gene-effect-unscaled-crispr-avana.csv",
+		# "data/raw/gene-effect-unscaled-crispr-ky.csv",
+		# "data/raw/gene-effect-unscaled-rnai-drive.csv",
+		# "data/raw/gene-effect-unscaled-rnai-achilles.csv",
+		# "data/raw/control-nonessential-genes.csv",
+		# "data/raw/control-essential-genes-core.csv"
+	output:
+		"figures/selecting_datasets_proc_vs_unproc_dataset_cor_boxplot.pdf",
+		"data/processed/processed_unprocessed_scaled_gene_effects.rds"
+	shell:
+		"Rscript src/selecting_datasets/processed_reagents/gene_cor_byVar.R"
+
+rule dataset_correlation_gene_recall:
+	input:
+		"data/raw/collection.zip",
+		"data/processed/processed_unprocessed_scaled_gene_effects.rds"
+		# "data/raw/hgnc-complete-set.csv"
+	output:
+		"figures/selecting_datasets_proc_vs_unprc_topcor_recall.pdf"
+	shell:
+		"Rscript src/selecting_datasets/processed_reagents/numgene_topcor_recall.R"

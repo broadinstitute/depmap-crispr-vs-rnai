@@ -7,12 +7,14 @@ library(cowplot)
 library(grid)
 library(gridExtra)
 
-source("src/id_utility.R")
+data_raw <- file.path("data","raw")
+data_processed <- file.path("data","processed")
+source(file.path("src","id_utility.R"))
 
-gene_scores <- list(all=list(crispr_avana = fread("data/raw/gene-effect-scaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                    crispr_ky = fread("data/raw/gene-effect-scaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                    rnai_achilles = fread("data/raw/gene-effect-scaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                    rnai_drive = fread("data/raw/gene-effect-scaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.)))
+gene_scores <- list(all=list(crispr_avana = fread(file.path(data_raw,"gene-effect-scaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                    crispr_ky = file.path(data_raw,"gene-effect-scaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                    rnai_achilles = fread(file.path(data_raw,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                    rnai_drive = fread(file.path(data_raw,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
 
 ce_percentile <- function(data,quantile_cutoff){
 
@@ -66,7 +68,7 @@ for (gp in names(ranks)){
 }
 
 results_all <- bind_rows(ranks[["all"]])
-write_csv(results_all,"data/processed/multilib_ce_percentile_results.csv")
+write_csv(results_all,file.path(data_processed,"multilib_ce_percentile_results.csv"))
 
 ##########  Hists for all 4 datasets run independently 
 
@@ -109,7 +111,7 @@ for (p in names(plot_pairs)){
   p1 <- plot_grid(plots[[1]],plots[[2]],nrow=1)
   p2 <- add_sub(p1, "Ranking within 90th Percentile Least Dependent Cell Line", size = 11, vpadding=grid::unit(0,"lines"),y=6, x=0.5, vjust=4.5)
   p3 <- grid.arrange(textGrob("Number of Genes",x = unit(.5, "npc"),rot=90,gp=gpar(fontsize=11)), p2, ncol=2,widths=c(1,20))
-  ggsave(plot=p3,paste0("figures/pandependency_90th_percentile_ranks_",p,".pdf"),device="pdf",height=2.5,width=4.5)
+  ggsave(plot=p3,file.path("figures",paste0("pandependency_90th_percentile_ranks_",p,".pdf")),device="pdf",height=2.5,width=4.5)
   
   
 }
