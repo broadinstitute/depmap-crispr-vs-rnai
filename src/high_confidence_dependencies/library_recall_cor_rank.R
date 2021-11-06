@@ -55,8 +55,8 @@ gene_cor_recall_rank <- function(d1,d2,d1_name,d2_name,hgnc){
 
 crispr_ky_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
 crispr_avana_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
-rnai_achilles_gs <- fread(file.path(data_raw,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
-rnai_drive_gs <- fread(file.path(data_raw,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+rnai_achilles_gs <- fread(file.path(data_processed,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+rnai_drive_gs <- fread(file.path(data_processed,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
 
 hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 hgnc$entrez_id %<>% as.character()

@@ -1,10 +1,10 @@
 
 rule pandependency_per_library:
 	input:
-		"data/raw/gene-effect-scaled-crispr-avana.csv",
-		"data/raw/gene-effect-scaled-crispr-ky.csv",
-		"data/raw/gene-effect-scaled-rnai-achilles.csv",
-		"data/raw/gene-effect-scaled-rnai-drive.csv"
+		# "data/raw/gene-effect-scaled-crispr-avana.csv",
+		# "data/raw/gene-effect-scaled-crispr-ky.csv",
+		# "data/raw/gene-effect-scaled-rnai-achilles.csv",
+		# "data/raw/gene-effect-scaled-rnai-drive.csv"
 	output:
 		"data/processed/multilib_ce_percentile_results.csv",
 		"figures/pandependency_90th_percentile_ranks_CRISPR.pdf",
@@ -14,11 +14,11 @@ rule pandependency_per_library:
 
 rule pandependency_per_library_benchmarks:
 	input:
-		"data/raw/hgnc-complete-set.csv",
-		"data/raw/control-essential-genes-core.csv",
-		"data/raw/control-nonessential-genes.csv",
-		"data/raw/control-essential-genes-CEGv2.csv",
-		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv",
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/control-essential-genes-core.csv",
+		# "data/raw/control-nonessential-genes.csv",
+		# "data/raw/control-essential-genes-CEGv2.csv",
+		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv",
 		"data/processed/multilib_ce_percentile_results.csv"
 	output:
 		"figures/pandependency_90th_percentile_ranks_RNAi_benchmark.pdf",
@@ -28,13 +28,87 @@ rule pandependency_per_library_benchmarks:
 
 rule correlation_between_libraries:
 	input:
-		"data/raw/hgnc-complete-set.csv",
-		"data/raw/gene-effect-scaled-crispr-avana.csv",
-		"data/raw/gene-effect-scaled-crispr-ky.csv",
-		"data/raw/gene-effect-scaled-rnai-achilles.csv",
-		"data/raw/gene-effect-scaled-rnai-drive.csv"
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/gene-effect-scaled-crispr-avana.csv",
+		# "data/raw/gene-effect-scaled-crispr-ky.csv",
+		"data/processed/gene-effect-scaled-rnai-achilles.csv",
+		"data/processed/gene-effect-scaled-rnai-drive.csv"
 	output:
 		"data/processed/CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv",
 		"data/processed/RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv"
 	shell:
 		"Rscript src/high_confidence_dependencies/library_recall_cor_rank.R"
+
+rule gene_effect_vs_probability:
+	input:
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/gene-effect-scaled-crispr-avana.csv",
+		# "data/raw/gene-effect-scaled-crispr-ky.csv",
+		# "data/raw/gene-effect-scaled-rnai-achilles.csv",
+		# "data/raw/gene-effect-scaled-rnai-drive.csv",
+		"data/processed/dependency-probability-crispr-ky.csv",
+		"data/processed/dependency-probability-crispr-avana.csv",
+		"data/processed/dependency-probability-rnai-achilles.csv",
+		"data/processed/dependency-probability-rnai-drive.csv"
+	output:
+		"figures/high_confidence_depFrac_vs_correlation.pdf",
+		"figures/high_confidence_depFrac_vs_variance.pdf"
+	shell:
+		"Rscript src/high_confidence_dependencies/var_cor_dep_relationships.R"
+
+rule library_agreement_metrics:
+	input:
+		# "data/raw/hgnc-complete-set.csv",
+		"data/processed/pandependency-score-crispr-avana.csv",
+		"data/processed/pandependency-score-crispr-ky.csv",
+		"data/processed/pandependency-score-rnai-achilles.csv",
+		"data/processed/pandependency-score-rnai-drive.csv",
+		"data/processed/RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv",
+		"data/processed/CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv",
+		"data/processed/dependency-probability-rnai-achilles.csv",
+		"data/processed/dependency-probability-rnai-drive.csv",
+		"data/processed/dependency-probability-crispr-avana.csv",
+		"data/processed/dependency-probability-crispr-ky.csv"
+	output:
+		"data/processed/library_agreement.csv"
+	shell:
+		"Rscript src/high_confidence_dependencies/library_agreement.R"
+
+rule library_agreement_pandep_mosaic:
+	input:
+		"data/processed/library_agreement.csv"
+	output:
+		"figures/high_confidence_crispr_pandep_mosaic.pdf",
+		"figures/high_confidence_rnai_pandep_mosaic.pdf"
+	shell:
+		"Rscript src/high_confidence_dependencies/pandep_mosaics.R"
+
+rule library_agreement_cor_recall_curve:
+	input:
+		"data/processed/RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv",
+		"data/processed/CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv"
+	output:
+		"figures/high_confidence_crispr_total_recall_curve.pdf",
+		"figures/high_confidence_rnai_total_recall_curve.pdf"
+	shell:
+		"Rscript src/high_confidence_dependencies/library_total_recall_curve.R"
+
+rule library_agreement_nondep_mosaic:
+	input:
+		"data/processed/library_agreement.csv"
+	output:
+		"figures/high_confidence_crispr_nodep_mosaic.pdf",
+		"figures/high_confidence_rnai_nodep_mosaic.pdf"
+	shell:
+		"Rscript src/high_confidence_dependencies/nodep_mosaics.R"
+
+rule library_agreement_supplemental_table:
+	input:
+		"data/processed/library_agreement.csv"
+	output:
+		"tables/Supplemental-Table-1.csv"
+	shell:
+		"Rscript src/high_confidence_dependencies/library_agreement_table.R"
+
+
+

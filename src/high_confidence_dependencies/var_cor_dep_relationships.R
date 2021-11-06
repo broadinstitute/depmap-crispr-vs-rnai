@@ -10,25 +10,25 @@ cors_list[["rnai"]]$entrez_id %<>% as.character(.)
 
 gs_list <- list("crispr_ky" = fread(file.path(data_raw,"gene-effect-scaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
                 "crispr_avana" = fread(file.path(data_raw,"gene-effect-scaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                "rnai_achilles" = fread(file.path(data_raw,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                "rnai_drive" = fread(file.path(data_raw,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+                "rnai_achilles" = fread(file.path(data_processed,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                "rnai_drive" = fread(file.path(data_processed,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
 
 # gene ID updates which were performed on RNAi datasets as part of target discovery pipeline
-hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
-hgnc$entrez_id %<>% as.character(.)
-hgnc %<>% subset(.,locus_group == "protein-coding gene")
-
-ach_gs <- gs_list[["rnai_achilles"]]
-colnames(ach_gs) <- extract_entrez(colnames(ach_gs))
-ach_gs <- ach_gs[,colnames(ach_gs) %in% hgnc$entrez_id]
-colnames(ach_gs) <- entrez_to_cds(colnames(ach_gs),hgnc)
-gs_list[["rnai_achilles"]] <- ach_gs
-
-drive_gs <- gs_list[["rnai_drive"]]
-colnames(drive_gs) <- extract_entrez(colnames(drive_gs))
-drive_gs <- drive_gs[,colnames(drive_gs) %in% hgnc$entrez_id]
-colnames(drive_gs) <- entrez_to_cds(colnames(drive_gs),hgnc)
-gs_list[["rnai_drive"]] <- drive_gs
+# hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
+# hgnc$entrez_id %<>% as.character(.)
+# hgnc %<>% subset(.,locus_group == "protein-coding gene")
+# 
+# ach_gs <- gs_list[["rnai_achilles"]]
+# colnames(ach_gs) <- extract_entrez(colnames(ach_gs))
+# ach_gs <- ach_gs[,colnames(ach_gs) %in% hgnc$entrez_id]
+# colnames(ach_gs) <- entrez_to_cds(colnames(ach_gs),hgnc)
+# gs_list[["rnai_achilles"]] <- ach_gs
+# 
+# drive_gs <- gs_list[["rnai_drive"]]
+# colnames(drive_gs) <- extract_entrez(colnames(drive_gs))
+# drive_gs <- drive_gs[,colnames(drive_gs) %in% hgnc$entrez_id]
+# colnames(drive_gs) <- entrez_to_cds(colnames(drive_gs),hgnc)
+# gs_list[["rnai_drive"]] <- drive_gs
 
 pr_list <- list("crispr_ky" = fread(file.path(data_processed,"dependency-probability-crispr-ky.csv")),
                 "crispr_avana"=fread(file.path(data_processed,"dependency-probability-crispr-avana.csv")),
@@ -79,15 +79,6 @@ rnai_df %<>% mutate(.,dataset="RNAi") %>% dplyr::select(.,gene,mean_var_norm,mea
 
 plot_df <- bind_rows(crispr_df,rnai_df)
 tech_pal <- c("CRISPR"="#0099B4FF","RNAi"="#925E9FFF")
-# ggplot(plot_df,aes(x=r,y=mean_var_norm,color=dataset)) +
-#   geom_smooth() +
-#   scale_color_manual(values=tech_pal) +
-#   theme_bw(base_size=11) +
-#   theme(legend.position = "none") +
-#   ylab("Mean Normalized Variance") +
-#   xlab("Pearson Correlation") +
-#   coord_flip()
-# ggsave("variance_vs_correlation.pdf",width=2,height=2)
 
 ggplot(plot_df,aes(x=mean_depFrac,y=r,color=dataset)) +
   geom_smooth() +

@@ -5,18 +5,26 @@ rule td_pipeline:
 
 rule common_essential:
     input:
-        # gene_effect = lambda wildcards: config[wildcards.dataset]["GS"]
-        gene_effect = "data/raw/gene-effect-scaled-{dataset}.csv"
+        gene_effect = lambda wildcards: config[wildcards.dataset]["GS"]
     output:
         outfile_full = "data/processed/pandependency-score-{dataset}.csv",
         outfile_list = "data/processed/pandependency-{dataset}.csv"
     shell:
         "Rscript src/R/CE_percentile_rank_analysis.R {input.gene_effect} {output.outfile_full} {output.outfile_list}"
 
+rule update_rnai_gene_ids:
+	input: 
+		"data/raw/gene-effect-scaled-rnai-achilles.csv",
+		"data/raw/gene-effect-scaled-rnai-drive.csv"
+	output:
+		"data/processed/gene-effect-scaled-rnai-achilles.csv",
+		"data/processed/gene-effect-scaled-rnai-drive.csv"
+	shell:
+		"Rscript update_gene_ids.R"
+
 rule inference:
     input:
-        # gene_effect = lambda wildcards: config[wildcards.dataset]["GS"],
-        gene_effect = "data/raw/gene-effect-scaled-{dataset}.csv",
+        gene_effect = lambda wildcards: config[wildcards.dataset]["GS"],
         tpm = "data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv"
         essential = "data/processed/pandependency-{dataset}.csv",
         non_essential = "data/raw/control-nonessential-genes.csv"
