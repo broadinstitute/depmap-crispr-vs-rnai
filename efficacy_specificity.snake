@@ -1,0 +1,12 @@
+
+rule gene_effect_means:
+	input:
+		"data/raw/collection.zip"
+		# "data/raw/gene-effect-scaled-crispr-matched.csv",
+		# "data/raw/gene-effect-scaled-rnai-matched.csv"
+	output:
+		"figures/efficacy_specificity_scatter_mean_gene_effect_legend.pdf"
+	shell:
+		"Rscript src/efficacy_specificity/scatter_mean_gene_effect.R"
+
+

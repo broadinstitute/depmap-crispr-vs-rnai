@@ -2,6 +2,7 @@
 include: "selecting_datasets.snake"
 include: "td_metrics.snake"
 include: "high_conf_deps.snake"
+include: "efficacy_specificty.snake"
 
 rule get_figshare_data:
 	output:
