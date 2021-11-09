@@ -1,15 +1,15 @@
 # require(ggsci)
 # require(scales)
 
-source("src/id_utility.R")
+source("src/packages_paths.R")
 
 hgnc <- fread("data/raw/hgnc-complete-set.csv")
 
 #Load all unscaled reagent sets
-file_dict <- list("RNAi-Achilles"=fread("data/raw/lfc-unscaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread("data/raw/lfc-unscaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-Avana"=fread("data/raw/lfc-unscaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread("data/raw/lfc-unscaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+file_dict <- list("RNAi-Achilles"=fread(file.path(data_raw,"lfc-unscaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "RNAi-DRIVE"=fread(file.path(data_raw,"lfc-unscaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "CRISPR-Avana"=fread(file.path(data_raw,"lfc-unscaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "CRISPR-KY"=fread(file.path(data_raw,"lfc-unscaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
 
 #filter for cell lines that overlap all 4 datasets
 cls <- lapply(file_dict,function(x){colnames(x)})
@@ -17,9 +17,9 @@ cls <- Reduce(intersect,cls)
 file_dict <- lapply(file_dict,function(x){x[,cls]})
 
 #Intersect genes across all 4 datasets
-CRISPR_map <- fread("data/raw/reagent-to-gene-map-sgrna.csv")
+CRISPR_map <- fread(file.path(data_raw,"reagent-to-gene-map-sgrna.csv"))
 CRISPR_map$entrez_id %<>% as.character(.)
-RNAi_map <- fread("data/raw/reagent-to-gene-map-shrna.csv")
+RNAi_map <- fread(file.path(data_raw,"reagent-to-gene-map-shrna.csv"))
 RNAi_map$entrez_id %<>% as.character(.)
 
 genes <- intersect(CRISPR_map$entrez_id[CRISPR_map$Avana],CRISPR_map$entrez_id[CRISPR_map$KY])
@@ -49,5 +49,5 @@ gene_score <- function(tmp_reagents,reagent_map,aggregate_func){
 
 gene_score_dict <- lapply(names(file_dict),function(x){gene_score(file_dict[[x]],reagent_dict[[x]],mean_narm)})
 names(gene_score_dict) <- names(file_dict)
-saveRDS(gene_score_dict,file="data/processed/mean_reagent_lfc.rds")
+saveRDS(gene_score_dict,file=file.path(data_processed,"mean_reagent_lfc.rds"))
 

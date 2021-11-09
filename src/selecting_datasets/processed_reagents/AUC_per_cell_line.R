@@ -4,23 +4,22 @@
 # require(scales)
 # require(grid)
 
-source(file.path("src","id_utility.R"))
-raw_data <- file.path("data","raw")
-processed_data <- file.path("data","processed")
+source("src/packages_paths.R")
+
 #################################### All datasets ####################################
 
-hgnc <- fread(file.path(raw_data,"hgnc-complete-set.csv"))
+hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 
 #Get reagent mean data for overlapping CLs and genes
-file_dict <- readRDS(file.path(processed_data,"mean_reagent_lfc.rds"))
+file_dict <- readRDS(file.path(data_processed,"mean_reagent_lfc.rds"))
 names(file_dict) <- paste0(names(file_dict),"-Mean")
 file_dict <- lapply(file_dict,function(x){t(x)})
 
 # proc_dict <- readRDS("/Users/mburger/dynamic-duo-biorxiv/figures/benchmarking/processed/processed_unscaled_gene_effects.rds")
-proc_dict <- list("CRISPR-Avana"=fread(file.path(raw_data,"gene-effect-unscaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread(file.path(raw_data,"gene-effect-unscaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread(file.path(raw_data,"gene-effect-unscaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-Achilles"=fread(file.path(raw_data,"gene-effect-unscaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+proc_dict <- list("CRISPR-Avana"=fread(file.path(data_raw,"gene-effect-unscaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "CRISPR-KY"=fread(file.path(data_raw,"gene-effect-unscaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "RNAi-DRIVE"=fread(file.path(data_raw,"gene-effect-unscaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
+                  "RNAi-Achilles"=fread(file.path(data_raw,"gene-effect-unscaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
 
 names(proc_dict) <- paste0(names(proc_dict),"-Corrected")
 proc_dict <- lapply(proc_dict,function(x){colnames(x) <- extract_entrez(colnames(x)); return(x)})
@@ -35,14 +34,14 @@ genes <- Reduce(intersect,genes)
 file_dict <- lapply(file_dict,function(x){x[cls,genes]})
 
 #unbiased essential genes
-gene_set <- fread(file.path(raw_data,"control-essential-genes-unbiased.csv"))
+gene_set <- fread(file.path(data_raw,"control-essential-genes-unbiased.csv"))
 gene_set %<>% subset(.,unbiased_essential)
 gene_set$entrez_id %<>% as.character(.)
 gene_set %<>% subset(., entrez_id %in% genes)
 pos_set_ids <- gene_set$entrez_id
 
 #Get nonexpressed genes
-tpm <- fread(file.path(raw_data,"depmap-omics-expression-rnaseq-tpm-19Q1.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+tpm <- fread(file.path(data_raw,"depmap-omics-expression-rnaseq-tpm-19Q1.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
 cls <- intersect(cls,rownames(tpm))
 genes_exp <- intersect(genes,extract_entrez(colnames(tpm)))
 colnames(tpm) <- extract_entrez(colnames(tpm))

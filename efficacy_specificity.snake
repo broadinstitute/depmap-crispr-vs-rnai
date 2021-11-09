@@ -10,3 +10,28 @@ rule gene_effect_means:
 		"Rscript src/efficacy_specificity/scatter_mean_gene_effect.R"
 
 
+rule mean_LFC_library_benchmarks:
+	input:
+		"data/processed/mean_reagent_lfc.rds",
+		"data/raw/collection.zip"
+		# "data/raw/control-nonessential-genes.csv",
+		# "data/raw/control-essential-genes-core.csv"
+		# "data/raw/control-essential-genes-unbiased.csv",
+		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
+	output:
+		"figures/efficacy_specificity_mean_reagent_LFC.pdf"
+	shell:
+		"Rscript src/efficacy_specificity/mean_LFC_boxplot.R"
+
+rule mean_LFC_combRNAi_benchmarks:
+	input:
+		"data/raw/lfc-unscaled-dict.rds",
+		"data/raw/collection.zip"
+		# "data/raw/control-nonessential-genes.csv",
+		# "data/raw/control-essential-genes-core.csv"
+		# "data/raw/control-essential-genes-unbiased.csv",
+		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
+	output:
+		"figures/efficacy_specificity_mean_reagent_LFC.pdf"
+	shell:
+		"Rscript src/efficacy_specificity/mean_LFC_boxplot.R"
