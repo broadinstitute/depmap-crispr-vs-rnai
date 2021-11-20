@@ -32,6 +32,25 @@ rule mean_LFC_combRNAi_benchmarks:
 		# "data/raw/control-essential-genes-unbiased.csv",
 		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
 	output:
-		"figures/efficacy_specificity_mean_reagent_LFC.pdf"
+		"figures/efficacy_specificity_mean_reagent_LFC_combRNAi.pdf"
 	shell:
-		"Rscript src/efficacy_specificity/mean_LFC_boxplot.R"
+		"Rscript src/efficacy_specificity/mean_reagent_combRNAi_boxplot.R"
+
+rule gene_effect_unscaled_benchmarks:
+	input:
+		"data/raw/collection.zip"
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/gene-effect-unscaled-crispr-avana.csv",
+		# "data/raw/gene-effect-unscaled-crispr-ky.csv",
+		# "data/raw/gene-effect-unscaled-rnai-drive.csv",
+		# "data/raw/gene-effect-unscaled-rnai-achilles.csv",
+		# "data/raw/control-nonessential-genes.csv",
+		# "data/raw/control-essential-genes-core.csv"
+		# "data/raw/control-essential-genes-unbiased.csv",
+		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
+	output:
+		"data/processed/processed_unscaled_gene_effects.rds",
+		"figures/efficacy_specificity_processed_zscored_benchmark_boxplots.pdf"
+	shell:
+		"Rscript src/efficacy_specificity/processed_zscored_boxplot.R"
+
