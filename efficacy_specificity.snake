@@ -69,6 +69,19 @@ rule gene_effect_unscaled_benchmarks_combRNAi:
 	shell:
 		"Rscript src/efficacy_specificity/processed_zscored_combRNAi_boxplot.R"
 
+rule gene_effect_scaled_benchmarks:
+	input:
+		"data/raw/collection.zip",
+		"data/processed/processed_unscaled_gene_effects.rds"
+		# "data/raw/hgnc-complete-set.csv",
+		# "data/raw/control-nonessential-genes.csv",
+		# "data/raw/control-essential-genes-core.csv"
+		# "data/raw/control-essential-genes-unbiased.csv",
+		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
+	output:
+		"figures/efficacy_specificity_processed_scaled_benchmark_sets.pdf"
+	shell:
+		"Rscript src/efficacy_specificity/processed_scaled_violin.R"
 
 
 
