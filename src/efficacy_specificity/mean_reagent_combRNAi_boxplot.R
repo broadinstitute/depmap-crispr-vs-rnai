@@ -4,6 +4,15 @@ source("src/packages_paths.R")
 
 file_dict <- readRDS(file_dict,file=file.path(data_raw,"lfc-unscaled-dict.rds"))
 
+sgrna_map <- fread(file.path(data_raw,"reagent-to-gene-map-sgrna.csv"))
+shrna_map <- fread(file.path(data_raw,"reagent-to-gene-map-shrna.csv"))
+
+sgrna_map %<>% subset(.,reagent %in% rownames(file_dict[["CRISPR"]]))
+shrna_map %<>% subset(.,reagent %in% rownames(file_dict[["RNAi"]]))
+
+genes <- intersect(sgrna_map$entrez_id,shrna_map$entrez_id)
+cls <- colnames(file_dict[[1]])
+
 # Core essentials
 ceg <- fread(file.path(data_raw,"control-essential-genes-core.csv"),sep=",")
 ceg <- ceg$gene
@@ -29,7 +38,7 @@ colnames(tpm) <- extract_entrez(colnames(tpm))
 tpm <- tpm[cls,genes_exp]
 tpm <- t(tpm)
 tpm <- tpm < .2
-#Randomly select 50 non-expressed genes per cell line
+#Randomly select 10 non-expressed genes per cell line
 for (i in 1:ncol(tpm)){
   sampled_entrez <- sample(rownames(tpm)[tpm[,i]],10)
   tpm[,i] <- rownames(tpm) %in% sampled_entrez
@@ -111,11 +120,11 @@ neg_file_dict <- lapply(gene_score_dict,function(x){x[neg_ids,]})
   
 ggsave(plot=g, file.path("figures","efficacy_specificity_mean_reagent_LFC_combRNAi.pdf"),height=2.75,width=2.125)
 
-# plot_params <- list("CLs"=cls,
-#                     "CEG"=ceg_ids,
-#                     "UEG"=ueg_ids,
-#                     "NEG"=neg_ids,
-#                     "Non-expressed"=tpm)
-# 
-# saveRDS(plot_params,file="mean_reagent_combRNAi_boxplot_params.rds")
+plot_params <- list("CLs"=cls,
+                    "CEG"=ceg_ids,
+                    "UEG"=ueg_ids,
+                    "NEG"=neg_ids,
+                    "Non-expressed"=tpm)
+
+saveRDS(plot_params,file=file.path(data_processed,"mean_reagent_combRNAi_boxplot_params.rds"))
   
