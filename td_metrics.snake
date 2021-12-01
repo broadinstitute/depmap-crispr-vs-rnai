@@ -10,7 +10,7 @@ rule common_essential:
         outfile_full = "data/processed/pandependency-score-{dataset}.csv",
         outfile_list = "data/processed/pandependency-{dataset}.csv"
     shell:
-        "Rscript src/R/CE_percentile_rank_analysis.R {input.gene_effect} {output.outfile_full} {output.outfile_list}"
+        "Rscript src/dependency_metrics/CE_percentile_rank_analysis.R {input.gene_effect} {output.outfile_full} {output.outfile_list}"
 
 rule update_rnai_gene_ids:
 	input: 
@@ -20,7 +20,7 @@ rule update_rnai_gene_ids:
 		"data/processed/gene-effect-scaled-rnai-achilles.csv",
 		"data/processed/gene-effect-scaled-rnai-drive.csv"
 	shell:
-		"Rscript update_gene_ids.R"
+		"Rscript src/dependency_metrics/update_gene_ids.R"
 
 rule inference:
     input:
@@ -31,5 +31,50 @@ rule inference:
     output:
         pr_outfile = "data/processed/dependency-probability-{dataset}.csv"
     shell:
-        "python src/InferProbabilities.py --gene-effect {input.gene_effect} --tpm {input.tpm} --pos-cntrl {input.essential} --neg-cntrl {input.non_essential} --pr-outfile {output.pr_outfile}"
+        "python src/dependency_metrics/InferProbabilities.py --gene-effect {input.gene_effect} --tpm {input.tpm} --pos-cntrl {input.essential} --neg-cntrl {input.non_essential} --pr-outfile {output.pr_outfile}"
+
+
+rule sparkle_LRT_params:
+    input:
+        gene_effect = lambda wildcards: config[wildcards.dataset]["GS"]
+    output:
+        indexes = "data/processed/" + "{dataset}-sparkle-LRT-params.csv",
+        filelist = "data/processed/" + "{dataset}-sparkle-LRT-filelist.csv"
+    params:
+        jobs_per_task = "1000"
+    run:
+        import pandas as pd
+        import numpy as np
+        from itertools import compress
+
+        #Param info
+        Y = pd.read_csv(input.gene_effect,index_col=0)
+        num_genes = Y.shape[1]
+
+        jobs_per_task = int(params.jobs_per_task)
+        start_index = np.array(range(0,num_genes,jobs_per_task))
+        end_index = start_index + jobs_per_task
+        end_index[-1] = num_genes
+        param_df = pd.DataFrame({'start':start_index, 'end':end_index})
+        param_df.to_csv(output.indexes,index=False)
+
+        #File info
+        file_df = pd.DataFrame({'file':[input.gene_effect]})
+        file_df.to_csv(output.filelist,index=False,header=False)
+
+rule run_LRT:
+    input:
+        gene_effect = lambda wildcards: config[wildcards.dataset]["GS"],
+        sparkle_params = "data/processed/" + "{dataset}-sparkle-LRT-params.csv",
+        sparkle_filelist = "data/processed/" + "{dataset}-sparkle-LRT-filelist.csv"
+    output:
+        outfile = "data/processed/" + "{dataset}-LRT.csv"
+    params:
+        sparkles_config = ".sparkles",
+        job_name = "tmp-LRT-" + config["RUN-ID"] + "-{dataset}",
+        data_name = "{dataset}"
+    shell:
+        "src/sparkle/lrt.sh {params.sparkles_config} {params.job_name} {input.sparkle_filelist} {input.sparkle_params} {input.gene_effect} {params.data_name} {output.outfile}"
+
+
 

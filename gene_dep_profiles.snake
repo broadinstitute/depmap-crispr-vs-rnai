@@ -1,0 +1,11 @@
+
+rule lrt_illustration:
+	input:
+		"data/raw/collection.zip"
+		# "data/raw/gene-effect-scaled-crispr-avana.csv",
+		# "data/raw/gene-effect-scaled-rnai-matched.csv"
+	output:
+		"figures/gene_deps_profiles_WRN_LRT_RNAi_illustration.pdf",
+		"figures/gene_deps_profiles_WRN_LRT_CRISPR_illustration.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/LRT_illustration.R"

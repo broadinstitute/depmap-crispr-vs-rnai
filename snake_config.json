@@ -1,7 +1,7 @@
 {
 	"LIBRARY": ["crispr-avana","crispr-ky","rnai-achilles","rnai-drive"],
 	"PERTURBATION": ["crispr","rnai"],
-	"METRIC": ["pandependency","dependency-probability"],
+	"METRIC": ["pandependency","dependency-probability","LRT"],
 	"crispr-avana": {"GS": "data/raw/gene-effect-scaled-crispr-avana.csv"},
 	"crispr-ky": {"GS": "data/raw/gene-effect-scaled-crispr-ky.csv"},
 	"rnai-achilles": {"GS": "data/processed/gene-effect-scaled-rnai-achilles.csv"},
