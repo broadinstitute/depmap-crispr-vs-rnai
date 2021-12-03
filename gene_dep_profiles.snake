@@ -9,3 +9,18 @@ rule lrt_illustration:
 		"figures/gene_deps_profiles_WRN_LRT_CRISPR_illustration.pdf"
 	shell:
 		"Rscript src/gene_dep_profiles/LRT_illustration.R"
+
+rule lrt_enrichment:
+	input:
+		"data/raw/collection.zip",
+		# "data/raw/control-oncoKB.csv",
+		# "data/raw/depmap-omics-mutation-hotspot.csv",
+		# "data/raw/depmap-omics-mutation-damaging.csv",
+		# "data/raw/gene-effect-scaled-crispr-matched.csv",
+		"data/processed/crispr-matched-LRT.csv",
+		"data/processed/rnai-matched-LRT.csv"
+	output:
+		"figures/gene_deps_profiles_LRT_onco_enrichment.pdf",
+		"figures/gene_deps_profiles_LRT_tsg_enrichment.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/LRT_enrichment.R"
