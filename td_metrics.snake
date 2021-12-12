@@ -1,11 +1,22 @@
 
-rule td_pipeline:
+rule gene_deps_table:
     input: 
-        results = expand("{analysis}-{dataset}.csv", dataset=config["LIBRARY"], analysis=config["METRIC"])
+        results = expand("{analysis}-{dataset}.csv", dataset=config["LIBRARY"], analysis=config["METRIC"]),
+        hgnc = "data/raw/hgnc-complete-set.csv"
+    output:
+        gene_deps = "tables/" + "Supplemental-Table-2.csv"
+    params:
+        datasets = "crispr-matched,rnai-matched"
+        analysis = "dependency-counts,pandependency-score,gene-effect-moments,dependency-probability-variance,gene-effect-LRT"
+    shell:
+        "Rscript src/dependency_metrics/gene_deps_metrics.R {params.datasets} {params.analysis} {input.hgnc} {output.gene_deps}"
+
 
 rule common_essential:
     input:
-        gene_effect = lambda wildcards: config[wildcards.dataset]["GS"]
+        gene_effect = lambda wildcards: config[wildcards.library]["GS"],
+        rnai_achilles = "data/processed/gene-effect-scaled-rnai-achilles.csv",
+        rnai_drive = "data/processed/gene-effect-scaled-rnai-drive.csv"
     output:
         outfile_full = "data/processed/pandependency-score-{dataset}.csv",
         outfile_list = "data/processed/pandependency-{dataset}.csv"
@@ -24,19 +35,47 @@ rule update_rnai_gene_ids:
 
 rule inference:
     input:
-        gene_effect = lambda wildcards: config[wildcards.dataset]["GS"],
+        gene_effect = lambda wildcards: config[wildcards.library]["GS"],
         tpm = "data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv"
         essential = "data/processed/pandependency-{dataset}.csv",
-        non_essential = "data/raw/control-nonessential-genes.csv"
+        non_essential = "data/raw/control-nonessential-genes.csv",
+        rnai_achilles = "data/processed/gene-effect-scaled-rnai-achilles.csv",
+        rnai_drive = "data/processed/gene-effect-scaled-rnai-drive.csv"
     output:
         pr_outfile = "data/processed/dependency-probability-{dataset}.csv"
     shell:
         "python src/dependency_metrics/InferProbabilities.py --gene-effect {input.gene_effect} --tpm {input.tpm} --pos-cntrl {input.essential} --neg-cntrl {input.non_essential} --pr-outfile {output.pr_outfile}"
 
+rule PR_bins:
+    input:
+        probs = "dependency-probability-{dataset}.csv",
+        rnai_achilles = "data/processed/gene-effect-scaled-rnai-achilles.csv",
+        rnai_drive = "data/processed/gene-effect-scaled-rnai-drive.csv"
+    output:
+        "data/processed/" + "dependency-counts-{dataset}.csv"
+    shell:
+        "Rscript src/dependency_metrics/PR_bins.R {input.probs} {output}"
+
+rule moments:
+    input:
+        gene_effect = lambda wildcards: config[wildcards.library]["GS"]
+    output:
+        "gene-effect-moments-{dataset}.csv"
+    shell:
+        "Rscript src/dependency_metrics/moments.R {input.gene_effect} {output}"
+
+rule high_variance:
+    input:
+        probs = "dependency-probability-{dataset}.csv",
+        tpm = "data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv"
+    output: 
+        "data/processed/" + "dependency-probability-variance-{dataset}.csv"
+    shell:
+        "Rscript src/dependency_metrics/highVar_dependency.R {input.probs} {input.tpm} {output}"
 
 rule sparkle_LRT_params:
     input:
-        gene_effect = lambda wildcards: config[wildcards.dataset]["GS"]
+        gene_effect = lambda wildcards: config[wildcards.library]["GS"]
     output:
         indexes = "data/processed/" + "{dataset}-sparkle-LRT-params.csv",
         filelist = "data/processed/" + "{dataset}-sparkle-LRT-filelist.csv"
@@ -64,11 +103,11 @@ rule sparkle_LRT_params:
 
 rule run_LRT:
     input:
-        gene_effect = lambda wildcards: config[wildcards.dataset]["GS"],
+        gene_effect = lambda wildcards: config[wildcards.library]["GS"],
         sparkle_params = "data/processed/" + "{dataset}-sparkle-LRT-params.csv",
         sparkle_filelist = "data/processed/" + "{dataset}-sparkle-LRT-filelist.csv"
     output:
-        outfile = "data/processed/" + "{dataset}-LRT.csv"
+        outfile = "data/processed/" + "gene-effect-LRT-{dataset}.csv"
     params:
         sparkles_config = ".sparkles",
         job_name = "tmp-LRT-" + config["RUN-ID"] + "-{dataset}",
