@@ -1,16 +1,9 @@
 
-
-# library(purrr)
-# library(ggbeeswarm)
-# library(ggjoy)
-# library(viridis)
-# library(ggsci)
-# library(scales)
-# require(cowplot)
-# library(reshape2)
-# library(grid)
+# require(reshape2)
 
 source("src/packages_paths.R")
+library(ggridges)
+library(grid)
 
 #Load CRISPR and RNAi gene effects
 ceres <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix()
@@ -134,7 +127,7 @@ genedeps_counts <- t(genedeps_counts)
 genedeps_counts <- data.frame(genedeps_counts,check.names = F)
 genedeps_labels <- genedeps_counts
 genedeps_labels$ID <- rownames(genedeps_labels)
-genedeps_labels <- melt(genedeps_labels)
+genedeps_labels <- reshape2::melt(genedeps_labels)
 
 bars_pal <- c("CRISPR"="#0099B4FF","Overlap"="#868686FF","RNAi"="#925E9FFF")
 
