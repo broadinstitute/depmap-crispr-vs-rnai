@@ -45,4 +45,15 @@ rule dep_class_flow_diagram:
 	shell:
 		"Rscript src/gene_dep_profiles/flow_diagram.R"
 
+rule dep_frac_per_cell_line:
+	input:
+		"tables/Supplemental-Table-2.csv",
+		"data/processed/dependency-probability-crispr-matched.csv",
+		"data/processed/dependency-probability-rnai-matched.csv"
+	output:
+		"figures/gene_deps_profiles_totalfrac_perCL_stackedbar.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/dep_frac_per_CL.R"
+
+
 
