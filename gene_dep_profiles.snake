@@ -55,5 +55,25 @@ rule dep_frac_per_cell_line:
 	shell:
 		"Rscript src/gene_dep_profiles/dep_frac_per_CL.R"
 
+rule SSD_example_profile:
+	input:
+		"data/raw/gene-effect-scaled-crispr-matched.csv",
+		"data/raw/depmap-omics-mutation-hotspot.csv"
+	output:
+		"figures/gene_deps_profiles_BRAF_hotspot_density.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/example_genes/BRAF_hotpost_density.R"
+
+rule HVD_example_profile:
+	input:
+		"data/raw/gene-effect-scaled-crispr-matched.csv",
+		"data/raw/depmap-cell-line-annotations.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
+		"data/raw/gene-set-library.csv"
+	output:
+		"figures/gene_deps_profiles_ADAR_IFN.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/example_genes/ADAR_ISG_ssGSEA.R"
+
 
 
