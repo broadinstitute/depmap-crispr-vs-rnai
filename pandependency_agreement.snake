@@ -1,0 +1,14 @@
+
+rule euler_digram:
+	input:
+		"tables/Supplemental-Table-1.csv",
+		"tables/Supplemental-Table-2.csv",
+		"data/raw/control-essential-genes-unbiased.csv"
+	output:
+		"figures/pandependency_agreement_CRISPR_euler_venn.pdf",
+		"figures/pandependency_agreement_RNAi_euler_venn.pdf"
+	shell:
+		"Rscript src/pandependency_agreement/euler_diagrams.R"
+
+
+

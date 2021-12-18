@@ -83,7 +83,7 @@ for (dep_class in rev(c(paste0("RNAi_",class_order),paste0("CRISPR_",class_order
   gene_deps %<>% add_column(.,!!dep_class := gene_deps$entrez_id %in% gene_lists[[dep_class]],.after=3)
 }
 
-####### Add the mutually exclusive mappings
+####### Add the disjoint mappings
 gene_deps %<>% add_column(.,CRISPR_class="Weakly Selective Dependency",.after=3)
 gene_deps$CRISPR_class[gene_deps$CRISPR_ND] <- "Non-dependency"
 gene_deps$CRISPR_class[gene_deps$CRISPR_SSD] <- "Strongly Selective Dependency"
