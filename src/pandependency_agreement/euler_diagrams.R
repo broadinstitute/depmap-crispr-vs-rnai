@@ -33,15 +33,7 @@ t2$evidence <- rowSums(t2[,c("mouse_ko","exac_hit","trap_hit")],na.rm=T)
 
 t2$support <- t2$evidence >= 2
 
-t2$pandep_group <- "unknown"
-t2$pandep_group[(!t2$RNAi_PD) & (!t2$CRISPR_PD)] <- "baseline"
-t2$pandep_group[(t2$RNAi_PD) & (t2$CRISPR_PD)] <- "shared"
-t2$pandep_group[(!t2$RNAi_PD) & (t2$CRISPR_PD)] <- "CRISPR-specific"
-t2 %<>% subset(.,pandep_group %in% c("baseline","shared","CRISPR-specific"))
-
 t2$evidence %<>% as.factor(.)
-
-t2$pandep_group <- gsub("CRISPR-specific","CRISPR-spec.",t2$pandep_group)
 
 #CRISPR support
 crispr_mat <- dplyr::select(t2,CRISPR=CRISPR_PD,Mus=mouse_ko,ExAC=exac_hit,GT=trap_hit)

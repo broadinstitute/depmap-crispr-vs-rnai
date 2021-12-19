@@ -10,5 +10,15 @@ rule euler_digram:
 	shell:
 		"Rscript src/pandependency_agreement/euler_diagrams.R"
 
+rule ROC_predicting_CRISPR_pandep_class:
+	input:
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv",
+		"data/raw/control-essential-genes-unbiased.csv"
+		"data/processed/library_agreement.csv"
+	output:
+		"figures/pandependency_agreement_ROC_predicting_CRISPR_class.pdf"
+	shell:
+		"Rscript src/pandependency_agreement/ROC_predicting_CRISPR_class.R"
 
 
