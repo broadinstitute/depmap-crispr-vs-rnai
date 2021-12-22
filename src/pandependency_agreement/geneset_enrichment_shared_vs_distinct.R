@@ -114,4 +114,7 @@ for (i in 1:length(c_names)){
   ggsave(plot=p,file.path("figures",paste0("pandependency_agreement_",tmp_c,"_odds_ratio_scatter.pdf")),height=2.5,width=3.1)
 }
 
-
+sum(grepl("^GO_",df_multilib$gene_set))
+sum(grepl("^BIOCARTA_",df_multilib$gene_set))
+sum(grepl("^KEGG_",df_multilib$gene_set))
+sum(grepl("^REACTOME_",df_multilib$gene_set))
