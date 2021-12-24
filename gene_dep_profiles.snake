@@ -55,6 +55,19 @@ rule dep_frac_per_cell_line:
 	shell:
 		"Rscript src/gene_dep_profiles/dep_frac_per_CL.R"
 
+rule dep_frac_per_cell_line_by_lineage:
+	input:
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/depmap-cell-line-annotations.csv",
+		"data/processed/dependency-probability-crispr-matched.csv",
+		"data/processed/dependency-probability-rnai-matched.csv",
+		"tables/Supplemental-Table-2.csv"
+	output:
+		"figures/gene_deps_profiles_totalfrac_per_CL_byDisease.pdf",
+		"figures/gene_deps_profiles_depfrac_per_CL_byDisease.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/dep_frac_per_CL_by_disease.R"
+
 rule SSD_example_profile:
 	input:
 		"data/raw/gene-effect-scaled-crispr-matched.csv",

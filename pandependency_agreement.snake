@@ -21,4 +21,14 @@ rule ROC_predicting_CRISPR_pandep_class:
 	shell:
 		"Rscript src/pandependency_agreement/ROC_predicting_CRISPR_class.R"
 
-
+rule expression_vs_dependency:
+	input:
+		"data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
+		"data/raw/gene-effect-scaled-crispr-matched.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv",
+		"data/raw/hgnc-complete-set.csv",
+		"tables/Supplemental-Table-1.csv"
+	output:
+		"figures/pandependency_agreement_dependency_vs_expression_boxplot.pdf"
+	shell:
+		"Rscript src/pandependency_agreement/expression_vs_dependency.R"
