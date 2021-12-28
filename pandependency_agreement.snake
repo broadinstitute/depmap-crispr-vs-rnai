@@ -46,3 +46,36 @@ rule relative_expression_vs_relative_dependency:
 		"figures/pandependency_agreement_RNAi_pandep_relative_expression.pdf"
 	shell:
 		"Rscript src/pandependency_agreement/relative_expression_2d_density_and_histogram.R"
+
+rule generate_pandep_status_predictive_features:
+	input:
+		"data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
+		"data/raw/depmap-omics-proteomics-normalized-abundance.csv",
+		"data/raw/gene-effect-scaled-crispr-matched.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv"
+	output:
+		"data/processed/modeling_pandep_status_predictive_features.rds"
+	shell:
+		"Rscript modeling_pandep_status_predictive_features.R"
+
+rule fit_pandep_status_rf:
+	input: 
+		"tables/Supplemental-Table-1.csv",
+		"tables/Supplemental-Table-2.csv",
+		"data/raw/hgnc-complete-set.csv",
+		"data/processed/modeling_pandep_status_predictive_features.rds"
+	output:
+		"data/processed/rf_pandep_class_models_wFeats.rds",
+		"figures/pandependency_agreement_model_allfeat_depth_distribution.pdf",
+		"figures/pandependency_agreement_model_allfeat_example_tree.pdf"
+	shell:
+		"Rscript src/pandependency_agreement/modeling_pandep_status_fit_rf.R"
+
+rule modeling_pandep_status_ROC:
+	input: 
+		"data/processed/rf_pandep_class_models_wFeats.rds"
+	output:
+		"figures/pandependency_agreement_model_ROC.pdf"
+	shell:
+		"Rscript src/pandependency_agreement/modeling_pandep_status_ROC.R"
+
