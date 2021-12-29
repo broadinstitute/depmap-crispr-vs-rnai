@@ -18,7 +18,7 @@ basic_stats <- function(d_name,d_list){
   u <- colMeans(d,na.rm=T)
   q1 <- matrixStats::colQuantiles(d,prob = c(0.1),na.rm=T)
   q2 <- matrixStats::colQuantiles(d,prob = c(0.9),na.rm=T)
-  sd <- matrixStats::colVars(d,na.rm=T)
+  cv <- matrixStats::colVars(d,na.rm=T)
   missing <- colSums(is.na(d)) / nrow(d)
   symbols <- gsub(" .*","",colnames(d))
   mult_iso_list <- symbols[duplicated(symbols)]
@@ -27,7 +27,7 @@ basic_stats <- function(d_name,d_list){
                    u=u,
                    q1=q1,
                    q2=q2,
-                   sd=sd,
+                   var=cv,
                    missing=missing,
                    mult_iso=mult_iso,
                    stringsAsFactors = F

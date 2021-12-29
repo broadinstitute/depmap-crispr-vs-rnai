@@ -1,4 +1,5 @@
 
+set.seed(42)
 library(viridis)
 
 # require(randomForest)
@@ -56,12 +57,13 @@ fit_rf_model <- function(y,X,tree_explainer_plots){
         theme_bw(base_size=11) +
         theme(axis.text=element_text(size=9)) +
         scale_fill_viridis(discrete=TRUE,option = "D")
-      ggsave(file.path("figures","pandependency_agreement_model_allfeat_depth_distribution.pdf"),width=6,height=4)
+      ggsave(file.path("figures","pandependency_agreement_model_allfeat_depth_distribution.pdf"),width=5.5,height=3.5)
       
       
       model_df <- cbind(y,X)
-      single_tree <- rpart::rpart(pandep_group~., data=model_df, method="class")
-      pdf(file.path("figures","pandependency_agreement_model_allfeat_example_tree.pdf"),width=4.75,height=3)
+      model_df %<>% dplyr::select(.,pandep_group,`mRNA-protein correlation`,`protein variance`,`mRNA lower quantile`,`protein upper quantile`,`mRNA mean`)
+      single_tree <- rpart::rpart(pandep_group~., data=model_df, method="class", control = list(maxdepth = 4))
+      pdf(file.path("figures","pandependency_agreement_model_allfeat_example_tree.pdf"),width=7,height=5.5)
       rpart.plot::rpart.plot(single_tree, box.palette="RdBu", shadow.col="gray", nn=TRUE,yesno=2,
                              type=2,
                              clip.right.labs = F,
@@ -82,7 +84,7 @@ fit_rf_model <- function(y,X,tree_explainer_plots){
   y_pred <- y_pred[rownames(y),]
   rf.roc <- pROC::roc(y[,1],y_pred[,"1"])
   
-  return(list("pred"=y_pred,"obs"=y,"roc"=rf.roc,"auc"= auc(rf.roc),"feat_imp"=feat_imp))
+  return(list("pred"=y_pred,"obs"=y,"roc"=rf.roc,"auc"= pROC::auc(rf.roc),"feat_imp"=feat_imp))
   
 }
 
@@ -144,13 +146,25 @@ print(paste0("shared pandep targets: ",nrow(y) - sum(y$pandep_group)))
 
 X <- full_df[,!grepl("pandep_group",colnames(full_df))]
 
-rnaseq_feats <- c("Expression_u","Expression_q1","Expression_q2","Expression_sd","Expression_missing")
-prot_feats <- c("Protein_u","Protein_q1","Protein_q2","Protein_sd","Protein_missing","Protein_mult_iso")
+colnames(X) <- gsub("Expression","mRNA ",colnames(X))
+colnames(X) <- gsub("Protein","protein ",colnames(X))
+colnames(X) <- gsub("_mult_iso","multiple isoforms",colnames(X))
+colnames(X) <- gsub("_u","mean",colnames(X))
+colnames(X) <- gsub("_q1","lower quantile",colnames(X))
+colnames(X) <- gsub("_q2","upper quantile",colnames(X))
+colnames(X) <- gsub("_var","variance",colnames(X))
+colnames(X) <- gsub("_cor","correlation",colnames(X))
+colnames(X) <- gsub("_missing","missing",colnames(X))
+colnames(X) <- gsub(" _protein","-protein",colnames(X))
+
+rnaseq_feats <- c("mRNA mean","mRNA lower quantile","mRNA upper quantile","mRNA variance","mRNA missing")
+prot_feats <- c("protein mean","protein lower quantile","protein upper quantile","protein variance","protein missing","protein multiple isoforms")
+
 
 feat_sets <- list(
   "mRNA"=X[,rnaseq_feats],
   "Protein"=X[,prot_feats],
-  "mRNA+prot+cor"=X[,c(rnaseq_feats,prot_feats,"Expression_Protein_cor")])
+  "mRNA+prot+cor"=X[,c(rnaseq_feats,prot_feats,"mRNA-protein correlation")])
 
 ###################### Fit models ###################### 
 
