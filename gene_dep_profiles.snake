@@ -98,5 +98,21 @@ rule pandependency_CRISPR_vs_RNAi_scatter:
 	shell:
 		"Rscript src/gene_dep_profiles/pandep_scatter.R"
 
+rule variance_CRISPR_vs_RNAi_scatter:
+	input:
+		"tables/Supplemental-Table-1.csv",
+		"tables/Supplemental-Table-2.csv"
+	output:
+		"figures/gene_deps_profiles_variance_scatter.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/variance_scatter.R"
 
+rule LRT_CRISPR_vs_RNAi_scatter:
+	input:
+		"tables/Supplemental-Table-1.csv",
+		"tables/Supplemental-Table-2.csv"
+	output:
+		"figures/gene_deps_profiles_LRT_scatter.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/LRT_scatter.R"
 
