@@ -88,5 +88,15 @@ rule HVD_example_profile:
 	shell:
 		"Rscript src/gene_dep_profiles/example_genes/ADAR_ISG_ssGSEA.R"
 
+rule pandependency_CRISPR_vs_RNAi_scatter:
+	input:
+		"data/raw/hgnc-complete-set.csv",
+		"tables/Supplemental-Table-1.csv",
+		"tables/Supplemental-Table-2.csv"
+	output:
+		"figures/gene_deps_profiles_pandependency_scatter.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/pandep_scatter.R"
+
 
 
