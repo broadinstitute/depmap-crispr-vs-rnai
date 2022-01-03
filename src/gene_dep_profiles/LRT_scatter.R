@@ -9,8 +9,12 @@ t2 <- fread(file.path("tables","Supplemental-Table-2.csv"))
 t2$entrez_id %<>% as.character(.)
 t2 %<>% subset(.,entrez_id %in% t1$entrez_id)
 
+point_pal <- c("grey50"="grey50","darkblue"="darkblue")
+t2$color_group <- "grey50" 
+t2$color_group[t2$CRISPR_SSD | t2$RNAi_SSD] <- "darkblue"
+
 normLRT <- dplyr::select(t2,symbol,
-                         CRISPR_LRT,RNAi_LRT)
+                         CRISPR_LRT,RNAi_LRT,color_group)
 
 
 max_LRT <- max(c(normLRT$CRISPR_LRT,normLRT$RNAi_LRT),na.rm=T)
@@ -49,7 +53,7 @@ ggplot(normLRT,aes(X,Y)) +
   annotate("rect", xmin=threshold, xmax=Inf, ymin=breaks[1], ymax=threshold, fill=mypal[2],alpha=0.2) +
   annotate("rect", xmin=breaks[1], xmax=threshold, ymin=threshold, ymax=Inf, fill=mypal[1],alpha=0.2) +
   geom_abline(slope=1,intercept = 0,linetype="dotted",color="gray") +
-  geom_point(alpha=.7,color="darkblue",size=1.5) +
+  geom_point(aes(color=color_group),alpha=.7,size=1.5) +
   geom_text_repel(data = se_labels, 
                   size=(point_label_font / ggplot2:::.pt),
                   aes(X,Y,label = symbol),
@@ -62,8 +66,8 @@ ggplot(normLRT,aes(X,Y)) +
   scale_y_continuous(breaks=breaks,labels=labels,limits=c(min_LRT,max_LRT)) +
   xlab("CRISPR LRT Score") +
   ylab("RNAi LRT Score") +
-  scale_colour_continuous(name = "Number of\nDependent\nCell Lines\n(CRISPR)", labels = c("0", "300", "600"), breaks=c(0,300,600)) +
-  theme(legend.position="right") +
+  scale_colour_manual(values=point_pal) +
+  theme(legend.position="none") +
   annotate("text", x = max_LRT, y = log2(50 + 100), label = paste0("CRISPR\n(",crispr_only_count,")"),size=(quadrant_label_font / ggplot2:::.pt),hjust=1) +
   annotate("text", x = log2(25 + 100), y = log2(500+100), label = paste0("RNAi\n(",rnai_only_count,")"),size=(quadrant_label_font / ggplot2:::.pt),hjust=0) +
   annotate("text", x = log2(500+100), y = log2(500+100), label = paste0("Shared\n(",both_count,")"),size=(quadrant_label_font / ggplot2:::.pt),hjust=.5)

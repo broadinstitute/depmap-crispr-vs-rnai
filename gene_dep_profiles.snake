@@ -116,3 +116,27 @@ rule LRT_CRISPR_vs_RNAi_scatter:
 	shell:
 		"Rscript src/gene_dep_profiles/LRT_scatter.R"
 
+rule shared_dependent_cell_lines_frac:
+	input:
+		"data/raw/hgnc-complete-set.csv",
+		"tables/Supplemental-Table-1.csv",
+		"tables/Supplemental-Table-2.csv",
+		"data/processed/dependency-probability-crispr-matched.csv",
+		"data/processed/dependency-probability-rnai-matched.csv"
+	output:
+		"figures/gene_deps_profiles_depCount_scatter_1x2_grid.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/dependent_CL_overlap.R"
+
+rule shared_dependent_cell_lines_dep_scatter:
+	input:
+		"data/raw/hgnc-complete-set.csv",
+		"tables/Supplemental-Table-1.csv",
+		"tables/Supplemental-Table-2.csv",
+		"data/processed/dependency-probability-crispr-matched.csv",
+		"data/processed/dependency-probability-rnai-matched.csv"
+	output:
+		"figures/gene_deps_profiles_probabilities_density2d_2x3_grid.pdf"
+	shell:
+		"Rscript src/gene_dep_profiles/probability_scatter_by_depClass.R"
+
