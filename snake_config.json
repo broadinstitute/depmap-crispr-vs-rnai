@@ -1,4 +1,5 @@
 {
+	"RUN-ID" : "CRISPR_vs_RNAi_manuscript",
 	"LIBRARY": ["crispr-avana","crispr-ky","crispr-matched","rnai-achilles","rnai-drive","rnai-matched"],
 	"PERTURBATION": ["crispr","rnai"],
 	"METRIC": ["pandependency","dependency-probability","LRT"],
