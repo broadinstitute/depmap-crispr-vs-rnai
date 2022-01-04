@@ -59,7 +59,7 @@ rule generate_pandep_status_predictive_features:
 		"Rscript modeling_pandep_status_predictive_features.R"
 
 rule fit_pandep_status_rf:
-	input: 
+	input:
 		"tables/Supplemental-Table-1.csv",
 		"tables/Supplemental-Table-2.csv",
 		"data/raw/hgnc-complete-set.csv",
@@ -72,10 +72,9 @@ rule fit_pandep_status_rf:
 		"Rscript src/pandependency_agreement/modeling_pandep_status_fit_rf.R"
 
 rule modeling_pandep_status_ROC:
-	input: 
+	input:
 		"data/processed/rf_pandep_class_models_wFeats.rds"
 	output:
 		"figures/pandependency_agreement_model_ROC.pdf"
 	shell:
 		"Rscript src/pandependency_agreement/modeling_pandep_status_ROC.R"
-

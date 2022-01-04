@@ -1,12 +1,12 @@
 
 rule gene_deps_table:
-    input: 
+    input:
         results = expand("{analysis}-{dataset}.csv", dataset=config["LIBRARY"], analysis=config["METRIC"]),
         hgnc = "data/raw/hgnc-complete-set.csv"
     output:
         gene_deps = "tables/" + "Supplemental-Table-2.csv"
     params:
-        datasets = "crispr-matched,rnai-matched"
+        datasets = "crispr-matched,rnai-matched",
         analysis = "dependency-counts,pandependency-score,gene-effect-moments,dependency-probability-variance,gene-effect-LRT"
     shell:
         "Rscript src/dependency_metrics/gene_deps_metrics.R {params.datasets} {params.analysis} {input.hgnc} {output.gene_deps}"
@@ -24,7 +24,7 @@ rule common_essential:
         "Rscript src/dependency_metrics/CE_percentile_rank_analysis.R {input.gene_effect} {output.outfile_full} {output.outfile_list}"
 
 rule update_rnai_gene_ids:
-	input: 
+	input:
 		"data/raw/gene-effect-scaled-rnai-achilles.csv",
 		"data/raw/gene-effect-scaled-rnai-drive.csv"
 	output:
@@ -36,7 +36,7 @@ rule update_rnai_gene_ids:
 rule inference:
     input:
         gene_effect = lambda wildcards: config[wildcards.library]["GS"],
-        tpm = "data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv"
+        tpm = "data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
         essential = "data/processed/pandependency-{dataset}.csv",
         non_essential = "data/raw/control-nonessential-genes.csv",
         rnai_achilles = "data/processed/gene-effect-scaled-rnai-achilles.csv",
@@ -68,7 +68,7 @@ rule high_variance:
     input:
         probs = "dependency-probability-{dataset}.csv",
         tpm = "data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv"
-    output: 
+    output:
         "data/processed/" + "dependency-probability-variance-{dataset}.csv"
     shell:
         "Rscript src/dependency_metrics/highVar_dependency.R {input.probs} {input.tpm} {output}"
@@ -114,6 +114,3 @@ rule run_LRT:
         data_name = "{dataset}"
     shell:
         "src/sparkle/lrt.sh {params.sparkles_config} {params.job_name} {input.sparkle_filelist} {input.sparkle_params} {input.gene_effect} {params.data_name} {output.outfile}"
-
-
-
