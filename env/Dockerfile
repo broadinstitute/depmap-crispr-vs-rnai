@@ -54,6 +54,8 @@ RUN R -e "install.packages('e1071',dependencies=TRUE, repos='http://cran.rstudio
 RUN R -e "install.packages('matrixStats',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('diptest',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('sn',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('wesanderson',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('ggridges',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "BiocManager::install('limma', ask = F)"
 
 RUN apt install -y python3-pip && \
