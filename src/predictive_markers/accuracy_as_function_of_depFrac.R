@@ -1,11 +1,11 @@
 
 source("src/packages_paths.R")
 
-crispr_res <- fread(file.path(data_processed,"gene-effect-ensemble-regression-crispr-matched.csv")) %>%
+crispr_res <- fread(file.path(data_processed,"ensemble-prediction-summary-crispr-matched.csv")) %>%
   subset(.,best) %>% 
   dplyr::select(.,gene,CRISPR_ensemble_pearson=pearson)
 
-rnai_res <- fread(file.path(data_processed,"gene-effect-ensemble-regression-rnai-matched.csv")) %>%
+rnai_res <- fread(file.path(data_processed,"ensemble-prediction-summary-rnai-matched.csv")) %>%
   subset(.,best) %>% 
   dplyr::select(.,gene,RNAi_ensemble_pearson=pearson)
 

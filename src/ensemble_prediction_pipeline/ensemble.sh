@@ -28,7 +28,7 @@ data_name=${11}
 	-n $job_name \
 	-u '@'$task_filelist \
 	--params $task_params \
-	python '^src/Python/RunEnsemble.py' \
+	python '^src/ensemble_prediction_pipeline/RunEnsemble.py' \
 		--model-config $model_config \
 		--task-mode $task_mode \
 		--targets $targets \

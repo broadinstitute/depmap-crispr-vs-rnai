@@ -1,8 +1,8 @@
 
 rule ensemble_regression_summary:
 	input:
-		"data/processed/gene-effect-ensemble-regression-crispr-matched.csv",
-		"data/processed/gene-effect-ensemble-regression-rnai-matched.csv"
+		"data/processed/ensemble-prediction-summary-crispr-matched.csv",
+		"data/processed/ensemble-prediction-summary-rnai-matched.csv"
 	output:
 		"tables/Supplemental-Table-3a.csv"
 	shell:
@@ -10,8 +10,8 @@ rule ensemble_regression_summary:
 
 rule accurate_model_count:
 	input:
-		"data/processed/gene-effect-ensemble-regression-crispr-matched.csv",
-		"data/processed/gene-effect-ensemble-regression-rnai-matched.csv",
+		"data/processed/ensemble-prediction-summary-crispr-matched.csv",
+		"data/processed/ensemble-prediction-summary-rnai-matched.csv",
 		"tables/Supplemental-Table-2.csv",
 		"data/raw/hgnc-complete-set.csv"
 	output:
@@ -24,8 +24,8 @@ rule accuracy_vs_dependent_fraction:
 		"data/raw/hgnc-complete-set.csv",
 		"tables/Supplemental-Table-1.csv",
 		"tables/Supplemental-Table-2.csv",
-		"data/processed/gene-effect-ensemble-regression-crispr-matched.csv",
-		"data/processed/gene-effect-ensemble-regression-rnai-matched.csv"
+		"data/processed/ensemble-prediction-summary-crispr-matched.csv",
+		"data/processed/ensemble-prediction-summary-rnai-matched.csv"
 	output:
 		"figures/predictive_markers_smoothed_accuracy_funcOf_depFrac.pdf"
 	shell:

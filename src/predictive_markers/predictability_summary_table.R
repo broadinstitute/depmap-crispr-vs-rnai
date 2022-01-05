@@ -2,12 +2,12 @@
 
 source("src/packages_paths.R")
 
-crispr_pred <- fread(file.path(data_processed,"gene-effect-ensemble-regression-crispr-matched.csv"))
+crispr_pred <- fread(file.path(data_processed,"ensemble-prediction-summary-crispr-matched.csv"))
 crispr_pred$ID <- paste0(crispr_pred$gene,"::",crispr_pred$model)
 
 crispr_pred %<>% dplyr::select(.,ID,CRISPR_accuracy=pearson,CRISPR_top_feature=feature0,CRISPR_top_feature_importance=feature0_importance)
 
-rnai_pred <- fread(file.path(data_processed,"gene-effect-ensemble-regression-rnai-matched.csv"))
+rnai_pred <- fread(file.path(data_processed,"ensemble-prediction-summary-rnai-matched.csv"))
 rnai_pred$ID <- paste0(rnai_pred$gene,"::",rnai_pred$model)
   
 rnai_pred %<>% dplyr::select(.,ID,RNAi_accuracy=pearson,RNAi_top_feature=feature0,RNAi_top_feature_importance=feature0_importance)
