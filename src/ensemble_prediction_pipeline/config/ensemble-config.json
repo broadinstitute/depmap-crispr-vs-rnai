@@ -1,0 +1,21 @@
+
+[
+    	{
+    		"Name": "Unbiased",
+    		"Confounders": "True",
+			"Features": ["RNAseq","ssGSEA","CN","MutDam","MutMis","MutHot","Fusion","RPPA","proteomics","metabolomics","RRBS","Lin","engineered"], 
+			"Required": ["Confounders","RNAseq","Lin"],
+			"Relation": "All", 
+			"Exempt": null,
+			"Jobs": "10"
+		},
+		{
+			"Name": "Related",
+			"Confounders": "True",
+        	"Features": ["RNAseq","CN","MutDam","MutMis","MutHot","RPPA","proteomics","metabolomics","RRBS","Lin","engineered"], 
+        	"Required": ["RNAseq","Lin"],
+        	"Relation": "MatchRelated", 
+        	"Exempt": ["Lin","engineered"],
+			"Jobs": "10"
+        }
+]

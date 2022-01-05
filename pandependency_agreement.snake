@@ -50,13 +50,13 @@ rule relative_expression_vs_relative_dependency:
 rule generate_pandep_status_predictive_features:
 	input:
 		"data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
-		"data/raw/depmap-omics-proteomics-normalized-abundance.csv",
+		"data/raw/ccle-omics-proteomics-normalized-abundance.csv",
 		"data/raw/gene-effect-scaled-crispr-matched.csv",
 		"data/raw/gene-effect-scaled-rnai-matched.csv"
 	output:
 		"data/processed/modeling_pandep_status_predictive_features.rds"
 	shell:
-		"Rscript modeling_pandep_status_predictive_features.R"
+		"Rscript src/pandependency_agreement/modeling_pandep_status_predictive_features.R"
 
 rule fit_pandep_status_rf:
 	input: 

@@ -1,0 +1,11 @@
+{
+	"RUN-ID": "Duo-genome-wide-CRISPR-v2",
+	"DATASET": {"GS": "data/raw/gene-effect-scaled-crispr-matched.csv", "Confounders": "data/raw/gene-effect-scaled-crispr-matched-confounders.csv"},
+	"TASK": "regress",
+	"MODELS": ["Unbiased","Related"],
+	"MODEL_DEF": "ensemble-config.json",
+	"FILTER": "none",
+	"COUNT": "NA",
+	"FEATURES": "Public-file-location.txt",
+	"DATA_NAME": "CRISPR"
+}

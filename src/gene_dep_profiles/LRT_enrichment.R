@@ -31,10 +31,10 @@ tsg <- subset(oncoKB,source =="TSG")
 tsg$entrez_id <- extract_entrez(tsg$CDS_ID)
 
 #Filter for oncogenes with missense mutation or TSG with damaging mutation
-mut_other <- fread(file.path(data_raw,"depmap-omics-mutation-hotspot.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+mut_other <- fread(file.path(data_raw,"depmap-omics-mutation-hotspot.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
 
 #filter for cell lines used in D2-Combined overlap
-crispr.gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+crispr.gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
 mut_other <- mut_other[rownames(mut_other) %in% rownames(crispr.gs),]
 colnames(mut_other) <- extract_entrez(colnames(mut_other))
 mut_other <- mut_other[,(colnames(mut_other) %in% oncogene$entrez_id)]
@@ -42,7 +42,7 @@ mut_other_count <- colSums(mut_other,na.rm=T)
 keep_onco <- names(mut_other_count)[mut_other_count > 0]
 oncogene %<>% subset(.,entrez_id %in% keep_onco)
 
-mut_dam <- fread(file.path(data_raw,"depmap-omics-mutation-damaging.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+mut_dam <- fread(file.path(data_raw,"depmap-omics-mutation-damaging.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
 mut_dam <- mut_dam[rownames(mut_dam) %in% rownames(crispr.gs),]
 colnames(mut_dam) <- extract_entrez(colnames(mut_dam))
 mut_dam <- mut_dam[,(colnames(mut_dam) %in% tsg$entrez_id)]

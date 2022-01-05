@@ -11,7 +11,7 @@ master %<>% subset(.,`Primary Site` == "haematopoietic_and_lymphoid_tissue")
 
 crispr_gs <- crispr_gs[!(rownames(crispr_gs) %in% master$DepMap_ID),]
 
-exp <- fread(file.path(data_raw,"depmap-omics-expression-rnaseq-tpm-18Q4.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+exp <- fread(file.path(data_raw,"depmap-omics-expression-rnaseq-tpm-18Q4.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
 exp <- exp[rownames(crispr_gs),]
 
 ifn <- fread(file.path(data_raw,"gene-set-library.csv"))
