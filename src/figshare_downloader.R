@@ -7,5 +7,3 @@ download.file(url ="https://figshare.com/ndownloader/articles/16735132?private_l
               destfile=zipfile)
 
 unzip(zipfile,exdir=data_dir)
-
-

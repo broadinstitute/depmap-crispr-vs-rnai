@@ -1,5 +1,8 @@
 library(ggridges)
 library(ggbeeswarm)
+library(tidyverse)
+library(data.table)
+library(magrittr)
 
 source("src/id_utility.R")
 
@@ -42,21 +45,21 @@ SSMD_list <- list()
 for (dset in names(file_dict)){
   gs_dataset = file_dict[[dset]]
   reagent_list = reagent_dict[[dset]]
-  
+
   pos_cntrl_reagents <- subset(reagent_list,entrez_id %in% pos_cntrl)$reagent
   neg_cntrl_reagents <- subset(reagent_list,entrez_id %in% neg_cntrl)$reagent
-  
+
   ssmd_list <- list()
   for (cl in colnames(gs_dataset)){
-    
+
     pos <- as.numeric(gs_dataset[rownames(gs_dataset) %in% pos_cntrl_reagents,cl])
     neg <- as.numeric(gs_dataset[rownames(gs_dataset) %in% neg_cntrl_reagents,cl])
     ssmd_list[[cl]] <- ssmd(pos,neg)
-    
+
   }
-  
+
   SSMD_list[[dset]] <- data.frame(`DepMap_ID`=names(ssmd_list),cell_line_SSMD=unlist(ssmd_list),dataset=dset,stringsAsFactors = F)
-  
+
 }
 
 SSMD_df <- bind_rows(SSMD_list)
@@ -90,27 +93,27 @@ dset_cl_values <- list()
 for (dset in names(file_dict)){
   gs_dataset = file_dict[[dset]]
   reagent_list = reagent_dict[[dset]]
-  
+
   pos_cntrl_reagents <- subset(reagent_list,entrez_id %in% pos_cntrl)$reagent
   neg_cntrl_reagents <- subset(reagent_list,entrez_id %in% neg_cntrl)$reagent
-  
+
   cl <- "ACH-000856"
-  
+
   pos <- as.numeric(gs_dataset[rownames(gs_dataset) %in% pos_cntrl_reagents,cl])
   neg <- as.numeric(gs_dataset[rownames(gs_dataset) %in% neg_cntrl_reagents,cl])
-  
+
   pos_df <- data.frame(control_set="CEG",
                           LFC=pos,
                           dataset=dset,
                           stringsAsFactors = F)
-  
+
   neg_df <- data.frame(control_set="NEG",
                        LFC=neg,
                        dataset=dset,
                        stringsAsFactors = F)
-  
+
   dset_cl_values[[dset]] <- rbind(pos_df,neg_df)
-  
+
 }
 
 dset_cl_values <- bind_rows(dset_cl_values)
@@ -141,4 +144,3 @@ for (dset in names(reagent_dict)){
   neg_vals <- subset(dset_cl_values,(control_set == "NEG") & (dataset == dset))$LFC
   print(paste0(dset,": ",ssmd(pos_vals,neg_vals)))
 }
-
