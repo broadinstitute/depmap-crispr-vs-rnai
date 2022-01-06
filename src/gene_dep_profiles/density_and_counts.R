@@ -6,8 +6,8 @@ library(ggridges)
 library(grid)
 
 #Load CRISPR and RNAi gene effects
-ceres <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix()
-d2 <- fread(file.path(data_raw,"gene-effect-scaled-rnai-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix()
+ceres <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix()
+d2 <- fread(file.path(data_raw,"gene-effect-scaled-rnai-matched.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix()
 
 colnames(ceres) <- extract_entrez(colnames(ceres))
 colnames(d2) <- extract_entrez(colnames(d2))

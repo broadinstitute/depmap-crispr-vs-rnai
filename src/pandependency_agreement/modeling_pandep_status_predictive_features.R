@@ -4,10 +4,10 @@ source("src/packages_paths.R")
 
 #Get expression, CRISPR, and RNAi data
 dataset <- list("Expression"=fread(file.path(data_raw,"depmap-omics-expression-rnaseq-tpm-18Q4.csv")),
-                "Protein"=fread(file.path(data_raw,"depmap-omics-proteomics-normalized-abundance.csv")),
+                "Protein"=fread(file.path(data_raw,"ccle-omics-proteomics-normalized-abundance.csv")),
                 "CRISPR"= fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")),
                 "RNAi" = fread(file.path(data_raw,"gene-effect-scaled-rnai-matched.csv")))
-dataset <- lapply(dataset,function(x){x %<>% column_to_rownames(.,var="V1") %>% as.matrix(.); return(x)})
+dataset <- lapply(dataset,function(x){x %<>% column_to_rownames(.,var="Row.name") %>% as.matrix(.); return(x)})
 
 cls <- lapply(dataset,rownames)
 cls <- Reduce(intersect,cls)

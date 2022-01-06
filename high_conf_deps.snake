@@ -1,9 +1,9 @@
 rule pandependency_per_library:
 	input:
-		# "data/raw/gene-effect-scaled-crispr-avana.csv",
-		# "data/raw/gene-effect-scaled-crispr-ky.csv",
-		# "data/raw/gene-effect-scaled-rnai-achilles.csv",
-		# "data/raw/gene-effect-scaled-rnai-drive.csv"
+		"data/raw/gene-effect-scaled-crispr-avana.csv",
+		"data/raw/gene-effect-scaled-crispr-ky.csv",
+		"data/raw/gene-effect-scaled-rnai-achilles.csv",
+		"data/raw/gene-effect-scaled-rnai-drive.csv"
 	output:
 		"data/processed/multilib_ce_percentile_results.csv",
 		"figures/pandependency_90th_percentile_ranks_CRISPR.pdf",
@@ -13,11 +13,11 @@ rule pandependency_per_library:
 
 rule pandependency_per_library_benchmarks:
 	input:
-		# "data/raw/hgnc-complete-set.csv",
-		# "data/raw/control-essential-genes-core.csv",
-		# "data/raw/control-nonessential-genes.csv",
-		# "data/raw/control-essential-genes-CEGv2.csv",
-		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv",
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/control-essential-genes-core.csv",
+		"data/raw/control-nonessential-genes.csv",
+		"data/raw/control-essential-genes-CEGv2.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv",
 		"data/processed/multilib_ce_percentile_results.csv"
 	output:
 		"figures/pandependency_90th_percentile_ranks_RNAi_benchmark.pdf",
@@ -27,9 +27,9 @@ rule pandependency_per_library_benchmarks:
 
 rule correlation_between_libraries:
 	input:
-		# "data/raw/hgnc-complete-set.csv",
-		# "data/raw/gene-effect-scaled-crispr-avana.csv",
-		# "data/raw/gene-effect-scaled-crispr-ky.csv",
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/gene-effect-scaled-crispr-avana.csv",
+		"data/raw/gene-effect-scaled-crispr-ky.csv",
 		"data/processed/gene-effect-scaled-rnai-achilles.csv",
 		"data/processed/gene-effect-scaled-rnai-drive.csv"
 	output:
@@ -40,11 +40,11 @@ rule correlation_between_libraries:
 
 rule gene_effect_vs_probability:
 	input:
-		# "data/raw/hgnc-complete-set.csv",
-		# "data/raw/gene-effect-scaled-crispr-avana.csv",
-		# "data/raw/gene-effect-scaled-crispr-ky.csv",
-		# "data/raw/gene-effect-scaled-rnai-achilles.csv",
-		# "data/raw/gene-effect-scaled-rnai-drive.csv",
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/gene-effect-scaled-crispr-avana.csv",
+		"data/raw/gene-effect-scaled-crispr-ky.csv",
+		"data/raw/gene-effect-scaled-rnai-achilles.csv",
+		"data/raw/gene-effect-scaled-rnai-drive.csv",
 		"data/processed/dependency-probability-crispr-ky.csv",
 		"data/processed/dependency-probability-crispr-avana.csv",
 		"data/processed/dependency-probability-rnai-achilles.csv",
@@ -57,7 +57,7 @@ rule gene_effect_vs_probability:
 
 rule library_agreement_metrics:
 	input:
-		# "data/raw/hgnc-complete-set.csv",
+		"data/raw/hgnc-complete-set.csv",
 		"data/processed/pandependency-score-crispr-avana.csv",
 		"data/processed/pandependency-score-crispr-ky.csv",
 		"data/processed/pandependency-score-rnai-achilles.csv",

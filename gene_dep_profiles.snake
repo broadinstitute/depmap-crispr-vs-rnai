@@ -1,9 +1,8 @@
 
 rule lrt_illustration:
 	input:
-		"data/raw/collection.zip"
-		# "data/raw/gene-effect-scaled-crispr-avana.csv",
-		# "data/raw/gene-effect-scaled-rnai-matched.csv"
+		"data/raw/gene-effect-scaled-crispr-avana.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv"
 	output:
 		"figures/gene_deps_profiles_WRN_LRT_RNAi_illustration.pdf",
 		"figures/gene_deps_profiles_WRN_LRT_CRISPR_illustration.pdf"
@@ -12,11 +11,10 @@ rule lrt_illustration:
 
 rule lrt_enrichment:
 	input:
-		"data/raw/collection.zip",
-		# "data/raw/control-oncoKB.csv",
-		# "data/raw/depmap-omics-mutation-hotspot.csv",
-		# "data/raw/depmap-omics-mutation-damaging.csv",
-		# "data/raw/gene-effect-scaled-crispr-matched.csv",
+		"data/raw/control-oncoKB.csv",
+		"data/raw/depmap-omics-mutation-hotspot.csv",
+		"data/raw/depmap-omics-mutation-damaging.csv",
+		"data/raw/gene-effect-scaled-crispr-matched.csv",
 		"data/processed/crispr-matched-LRT.csv",
 		"data/processed/rnai-matched-LRT.csv"
 	output:

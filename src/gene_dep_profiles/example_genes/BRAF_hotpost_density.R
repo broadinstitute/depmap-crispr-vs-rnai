@@ -1,9 +1,9 @@
 
 source("src/packages_paths.R")
 
-crispr_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix()
+crispr_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix()
 
-mut_hot <- fread(file.path(data_raw,"depmap-omics-mutation-hotspot.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+mut_hot <- fread(file.path(data_raw,"depmap-omics-mutation-hotspot.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
 mut_hot %<>% as.data.frame(.) %>% rownames_to_column(.,var="DepMap_ID")
 mut_hot %<>% dplyr::select(.,DepMap_ID,`BRAF (673)`)
 colnames(mut_hot)[2] <- "BRAF hotspot"

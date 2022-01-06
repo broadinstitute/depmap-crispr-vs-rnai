@@ -113,4 +113,4 @@ rule run_LRT:
         job_name = "tmp-LRT-" + config["RUN-ID"] + "-{dataset}",
         data_name = "{dataset}"
     shell:
-        "src/sparkle/lrt.sh {params.sparkles_config} {params.job_name} {input.sparkle_filelist} {input.sparkle_params} {input.gene_effect} {params.data_name} {output.outfile}"
+        "src/dependency_metrics/sparkle/lrt.sh {params.sparkles_config} {params.job_name} {input.sparkle_filelist} {input.sparkle_params} {input.gene_effect} {params.data_name} {output.outfile}"

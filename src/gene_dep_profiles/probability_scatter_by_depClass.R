@@ -71,3 +71,8 @@ ggplot(plot_df,aes(x=RNAi,y=CRISPR,color=group)) +
 ggsave(file.path("figures","gene_deps_profiles_probabilities_density2d_2x3_grid.pdf"),width=4,height=2.8)
 ggsave(file.path("figures","gene_deps_profiles_probabilities_density2d_2x3_grid.png"),width=4,height=2.8)
 
+#Get fraction of RNAi high-variance dependencies supported by CRISPR
+rnai_hv <- subset(plot_df,metric == "High-variance Dependency")
+rnai_hv %<>% subset(., distinct_RNAi)
+rnai_hv %<>% subset(., RNAi > .5)
+sum(rnai_hv$CRISPR > .5) / nrow(rnai_hv)

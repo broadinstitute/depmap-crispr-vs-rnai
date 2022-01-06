@@ -17,7 +17,7 @@ conf_ce <- subset(t1,CRISPR_pandep == 2) %>% select(., symbol, entrez_id)
 conf_ce %<>% add_column(.,CDS_ID=entrez_to_cds(conf_ce$entrez_id,hgnc),.before=1)
 
 #Get RNAi gene effect mean 
-rnai_gs <- fread(file.path(data_raw,"gene-effect-scaled-rnai-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix()
+rnai_gs <- fread(file.path(data_raw,"gene-effect-scaled-rnai-matched.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix()
 rnai_means <- colMeans(rnai_gs,na.rm=T)
 rnai_means <- data.frame(Gene=names(rnai_means),entrez_id=extract_entrez(names(rnai_means)),value=rnai_means,stringsAsFactors = F)
 rnai_means %<>% subset(.,Gene %in% keep_genes)

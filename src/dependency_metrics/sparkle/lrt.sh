@@ -21,7 +21,7 @@ out_file=$7
 	-n $job_name \
 	-u '@'$task_filelist \
 	--params $task_params \
-	Rscript '^src/R/LRT.R' $targets '{start}' '{end}' $out_file
+	Rscript '^src/dependency_metrics/LRT.R' $targets '{start}' '{end}' $out_file
 
 #Increases nodes
 /usr/local/envs/sparkles/bin/sparkles addnodes $job_name 20

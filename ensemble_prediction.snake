@@ -1,0 +1,109 @@
+
+
+rule ensemble_summary:
+    input:
+        ensemble_summary = expand("data/processed/" + "ensemble-prediction-summary-{target}.csv",target=config["PERTURBATION"])
+
+rule aggregate_models:
+    input:
+        model_summary = expand("data/processed/" + "ensemble-regress-{model}-accuracy-{target}.csv",model=config["MODELS"])
+    output:
+        ensemble_summary = "data/processed/" + "ensemble-prediction-summary-{target}.csv"
+    shell:
+        "Rscript src/ensemble_prediction_pipeline/gather_ensemble.R {output.ensemble_summary} {input.model_summary}" #2nd parameter is variable length of models
+
+rule regression_accuracy:
+    input: 
+        features = "data/processed/" + "ensemble-regress-{model}-features-{target}.csv",
+        predictions = "data/processed/" + "ensemble-regress-{model}-predictions-{target}.csv",
+        observed = "data/processed/" + "ensemble-regress-targets-{target}.csv"
+    output:
+        outfile = "data/processed/" + "ensemble-regress-{model}-accuracy-{target}.csv"
+    shell:
+        "Rscript src/ensemble_prediction_pipeline/model_accuracy_regression.R {input.features} {input.predictions} {input.observed} {output.outfile}"
+
+rule filter_regression_input:
+    input:
+        model_config = config["MODEL_DEF"],
+        gene_effect = lambda wildcards: config[wildcards.target]["GS"],
+        feature_info = config["FEATURES"]
+    output:
+        filtered = "data/processed/" + "ensemble-regress-targets-{target}.csv"
+    params:
+        task_filter = config["FILTER"],
+        var_thresh = config["COUNT"],
+        test_set = "NA"
+    shell:
+        "Rscript src/ensemble_prediction_pipeline/filter_ensemble_input_regress.R {input.model_config} {params.task_filter} {input.gene_effect} {params.var_thresh} {output.filtered} {params.test_set} {input.feature_info}"
+
+rule sparkle_ensemble_params:
+    input:
+        targets = "data/processed/" + "ensemble-regress-targets-{target}.csv",
+        confounders = lambda wildcards: config[wildcards.target]["Confounders"],
+        model_config = config["MODEL_DEF"],
+        feature_info = config["FEATURES"]
+    output:
+        indexes = "data/processed/" + "ensemble-sparkle-params-regress-{target}.csv",
+        filelist = "data/processed/" + "ensemble-sparkle-filelist-regress-{target}.csv"
+    run:
+        import json
+        import pandas as pd
+        import numpy as np
+        from itertools import compress
+        Y = pd.read_csv(input.targets,index_col=0)
+        num_genes = Y.shape[1]
+        with open(input.model_config) as f:
+            model_json = json.load(f)
+        model_names = list(map(lambda x: x['Name'], model_json))
+        #model_names = global.MODELS
+        all_dfs = list()
+        all_data = set()
+        for m in model_names:
+            model_def = model_json[model_names.index(m)]
+            #Task info
+            jobs_per_task = int(model_def["Jobs"])
+            start_index = np.array(range(0,num_genes,jobs_per_task))
+            end_index = start_index + jobs_per_task
+            end_index[-1] = num_genes
+            param_df = pd.DataFrame({'start':start_index, 'end':end_index, 'model':m})
+            all_dfs.append(param_df)
+            #File info
+            all_data = all_data.union(set(model_def["Features"]))
+            if model_def["Relation"]:
+                all_data = all_data.union(set([model_def["Relation"]]))
+        #Write task info
+        result = pd.concat(all_dfs)
+        result.to_csv(output.indexes,index=False)
+        #Write file info
+        file_map = pd.read_csv(input.feature_info,sep='\t')
+        #file_map['filename'] = [os.path.join(input.feature_dir,s) for s in file_map['filename']]
+        all_files = list(compress(file_map['filename'], file_map['dataset'].isin(all_data))) 
+
+        all_files.append(input.targets)
+        all_files.append(input.confounders)
+        all_files.append(input.feature_info)
+        all_files.append(input.model_config)
+        file_df = pd.DataFrame({'file':all_files})
+        file_df.to_csv(output.filelist,index=False,header=False)
+
+rule run_ensemble:
+    input:
+        targets = "data/processed/" + "ensemble-regress-targets-{target}.csv",
+        model_config = "src/ensemble_prediction_pipeline/config/" + "ensemble-config.json",
+        confounders = lambda wildcards: config[wildcards.target]["Confounders"],
+        feature_info = "src/ensemble_prediction_pipeline/config/" + "Public-file-location.txt",
+        sparkle_params = "data/processed/" + "ensemble-sparkle-params-regress-{target}.csv",
+        sparkle_filelist = "data/processed/" + "ensemble-sparkle-filelist-regress-{target}.csv"
+    output:
+        out_features = expand("data/processed/" + "ensemble-regress-{model}-features-{target}.csv",model=config["MODELS"]),
+        out_predictions = expand("data/processed/" + "ensemble-regress-{model}-predictions-{target}.csv",model=config["MODELS"])
+    params:
+        folds = "5",
+        sparkles_config = ".sparkles",
+        job_name = config["RUN-ID"] + "-Regress",
+        data_name = "ensemble-regress",
+        task_mode = config["TASK"]
+    shell:
+        "src/ensemble_prediction_pipeline/ensemble.sh {params.sparkles_config} {params.job_name} {input.sparkle_filelist} {input.sparkle_params} {input.model_config} {input.targets} {params.folds} {input.confounders} {input.feature_info} {params.task_mode} {params.data_name}"
+
+

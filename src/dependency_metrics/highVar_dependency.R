@@ -12,7 +12,7 @@ pr <- fread(pr_file) %>% column_to_rownames(.,var="Row.name")
 var_df <- data.frame(CDS_ID=colnames(pr),dep_var=matrixStats::colVars(as.matrix(pr),na.rm=T))
 var_df %<>% add_column(.,entrez_id=extract_entrez(var_df$CDS_ID),.before=1)
 
-exp <- fread(exp_file) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+exp <- fread(exp_file) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
 cls <- rownames(pr)
 genes <- colnames(pr)
 exp <- exp[cls,colnames(exp) %in% genes]

@@ -22,8 +22,8 @@ t2 %<>% dplyr::select(.,CDS_ID,entrez_id,pandep_group,symbol)
 
 rnai_pandep <- subset(t2,pandep_group %in% c("shared","RNAi-specific"))$CDS_ID
 
-exp <- fread(file.path(data_raw,"depmap-omics-expression-rnaseq-tpm-18Q4.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
-rnai <- fread(file.path(data_raw,"gene-effect-scaled-rnai-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+exp <- fread(file.path(data_raw,"depmap-omics-expression-rnaseq-tpm-18Q4.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
+rnai <- fread(file.path(data_raw,"gene-effect-scaled-rnai-matched.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
 cls <- intersect(rownames(exp),rownames(rnai))
 exp <- exp[cls,]
 rnai <- rnai[cls,]

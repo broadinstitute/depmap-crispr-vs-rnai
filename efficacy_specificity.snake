@@ -1,9 +1,8 @@
 
 rule gene_effect_means:
 	input:
-		"data/raw/collection.zip"
-		# "data/raw/gene-effect-scaled-crispr-matched.csv",
-		# "data/raw/gene-effect-scaled-rnai-matched.csv"
+		"data/raw/gene-effect-scaled-crispr-matched.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv"
 	output:
 		"figures/efficacy_specificity_scatter_mean_gene_effect_legend.pdf"
 	shell:
@@ -13,11 +12,10 @@ rule gene_effect_means:
 rule mean_LFC_library_benchmarks:
 	input:
 		"data/processed/mean_reagent_lfc.rds",
-		"data/raw/collection.zip"
-		# "data/raw/control-nonessential-genes.csv",
-		# "data/raw/control-essential-genes-core.csv"
-		# "data/raw/control-essential-genes-unbiased.csv",
-		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
+		"data/raw/control-nonessential-genes.csv",
+		"data/raw/control-essential-genes-core.csv"
+		"data/raw/control-essential-genes-unbiased.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
 	output:
 		"figures/efficacy_specificity_mean_reagent_LFC.pdf"
 	shell:
@@ -26,13 +24,12 @@ rule mean_LFC_library_benchmarks:
 rule mean_LFC_combRNAi_benchmarks:
 	input:
 		"data/raw/lfc-unscaled-dict.rds",
-		"data/raw/collection.zip"
-		# "data/raw/control-nonessential-genes.csv",
-		# "data/raw/control-essential-genes-core.csv"
-		# "data/raw/control-essential-genes-unbiased.csv",
-		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv",
-		# "data/raw/reagent-to-gene-map-sgrna.csv",
-		# "data/raw/reagent-to-gene-map-shrna.csv"
+		"data/raw/control-nonessential-genes.csv",
+		"data/raw/control-essential-genes-core.csv"
+		"data/raw/control-essential-genes-unbiased.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv",
+		"data/raw/reagent-to-gene-map-sgrna.csv",
+		"data/raw/reagent-to-gene-map-shrna.csv"
 	output:
 		"figures/efficacy_specificity_mean_reagent_LFC_combRNAi.pdf",
 		"data/processed/mean_reagent_combRNAi_boxplot_params.rds"
@@ -41,16 +38,15 @@ rule mean_LFC_combRNAi_benchmarks:
 
 rule gene_effect_unscaled_benchmarks:
 	input:
-		"data/raw/collection.zip"
-		# "data/raw/hgnc-complete-set.csv",
-		# "data/raw/gene-effect-unscaled-crispr-avana.csv",
-		# "data/raw/gene-effect-unscaled-crispr-ky.csv",
-		# "data/raw/gene-effect-unscaled-rnai-drive.csv",
-		# "data/raw/gene-effect-unscaled-rnai-achilles.csv",
-		# "data/raw/control-nonessential-genes.csv",
-		# "data/raw/control-essential-genes-core.csv"
-		# "data/raw/control-essential-genes-unbiased.csv",
-		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/gene-effect-unscaled-crispr-avana.csv",
+		"data/raw/gene-effect-unscaled-crispr-ky.csv",
+		"data/raw/gene-effect-unscaled-rnai-drive.csv",
+		"data/raw/gene-effect-unscaled-rnai-achilles.csv",
+		"data/raw/control-nonessential-genes.csv",
+		"data/raw/control-essential-genes-core.csv"
+		"data/raw/control-essential-genes-unbiased.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
 	output:
 		"data/processed/processed_unscaled_gene_effects.rds",
 		"figures/efficacy_specificity_processed_zscored_benchmark_boxplots.pdf"
@@ -60,10 +56,9 @@ rule gene_effect_unscaled_benchmarks:
 rule gene_effect_unscaled_benchmarks_combRNAi:
 	input:
 		"data/processed/mean_reagent_combRNAi_boxplot_params.rds",
-		"data/raw/collection.zip"
-		# "data/raw/hgnc-complete-set.csv",
-		# "data/raw/gene-effect-unscaled-crispr-matched.csv",
-		# "data/raw/gene-effect-unscaled-rnai-matched.csv"
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/gene-effect-unscaled-crispr-matched.csv",
+		"data/raw/gene-effect-unscaled-rnai-matched.csv"
 	output:
 		"figures/efficacy_specificity_processed_zscored_benchmark_sets_combRNAi.pdf"
 	shell:
@@ -71,13 +66,12 @@ rule gene_effect_unscaled_benchmarks_combRNAi:
 
 rule gene_effect_scaled_benchmarks:
 	input:
-		"data/raw/collection.zip",
-		"data/processed/processed_unscaled_gene_effects.rds"
-		# "data/raw/hgnc-complete-set.csv",
-		# "data/raw/control-nonessential-genes.csv",
-		# "data/raw/control-essential-genes-core.csv"
-		# "data/raw/control-essential-genes-unbiased.csv",
-		# "data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
+		"data/processed/processed_unscaled_gene_effects.rds",
+		"data/raw/hgnc-complete-set.csv",
+		"data/raw/control-nonessential-genes.csv",
+		"data/raw/control-essential-genes-core.csv"
+		"data/raw/control-essential-genes-unbiased.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
 	output:
 		"figures/efficacy_specificity_processed_scaled_benchmark_sets.pdf"
 	shell:
