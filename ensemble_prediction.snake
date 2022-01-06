@@ -2,7 +2,7 @@
 
 rule ensemble_summary:
     input:
-        ensemble_summary = expand("data/processed/" + "nsemble-prediction-summary-{target}.csv",target=config["PERTURBATION"])
+        ensemble_summary = expand("data/processed/" + "ensemble-prediction-summary-{target}.csv",target=config["PERTURBATION"])
 
 rule aggregate_models:
     input:

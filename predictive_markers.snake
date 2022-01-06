@@ -30,3 +30,68 @@ rule accuracy_vs_dependent_fraction:
 		"figures/predictive_markers_smoothed_accuracy_funcOf_depFrac.pdf"
 	shell:
 		"Rscript src/predictive_markers/accuracy_as_function_of_depFrac.R"
+
+rule gene_arm_location:
+	input:
+		"data/raw/" + "hgnc-complete-set.csv"
+	output:
+		"data/processed/" + "hgnc_gene_arm_location.csv"
+	shell:
+		"Rscript src/predictive_markers/marker_classes/gene_arm_location.R"
+
+rule CYCLOPS_annotations:
+	input:
+		"tables/Supplemental-Table-2.csv",
+		"data/processed/ensemble-prediction-summary-rnai-matched.csv",
+		"data/processed/hgnc_gene_arm_location.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
+		"data/raw/depmap-omics-cn-gene-internal-18q4.csv",
+		"data/raw/gene-effect-scaled-crispr-matched.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv"
+	output:
+		"data/processed/CYCLOPS_annotations.csv"
+	shell:
+		"Rscript src/predictive_markers/marker_classes/CYCLOPS_annotations.R"
+
+rule CYCLOPS_histogram:
+	input:
+		"tables/Supplemental-Table-2.csv",
+		"data/processed/ensemble-prediction-summary-rnai-matched.csv",
+		"data/raw/hgnc-complete-set.csv",
+		"data/processed/CYCLOPS_annotations.csv"
+	output:
+		"figures/predictive_markers_CYCLOPS_or_related_hist.pdf",
+		"figures/predictive_markers_CYCLOPS_hist.pdf"
+	shell:
+		"Rscript src/predictive_markers/CYCLOPS_hist.R"
+
+rule PRMT5_example:
+	input:
+		"data/raw/gene-effect-scaled-crispr-avana.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv",
+		"data/raw/depmap-omics-cn-gene-internal-18q4.csv"
+	output:
+		"figures/predictive_markers_PRMT5_boxplot.pdf"
+	shell:
+		"Rscript src/predictive_markers/PRMT5_boxplot.R"
+
+rule RBBP4_example:
+	input:
+		"data/raw/gene-effect-scaled-crispr-avana.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
+	output:
+		"figures/predictive_markers_RBBP4_density2d_smooth.pdf"
+	shell:
+		"Rscript src/predictive_markers/RBBP4_example.R"
+
+rule RAB6A_example:
+	input:
+		"data/raw/gene-effect-scaled-crispr-avana.csv",
+		"data/raw/gene-effect-scaled-rnai-matched.csv",
+		"data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
+	output:
+		"figures/predictive_markers_RAB6A_boxplot.pdf"
+	shell:
+		"Rscript src/predictive_markers/RAB6A_example.R"
+
