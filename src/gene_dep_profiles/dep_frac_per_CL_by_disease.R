@@ -93,7 +93,7 @@ rownames(hits_mat) <- rownames(hits_wide)
 hits_mat$ce_avg <- rowMeans(as.matrix(hits_mat[,c("crispr_pd","rnai_pd")]))
 hits_mat <- hits_mat[order(hits_mat$ce_avg,decreasing=F),]
 
-lineage_info <- fread(file.path(data_raw,"depmap-cell-line-annotations.csv"))
+lineage_info <- fread(file.path(data_raw,"depmap-cell-line-annotations-v131.csv"))
 lineage_info %<>% dplyr::select(.,DepMap_ID,`Primary Disease`,Disease)
 lineage_info %<>% subset(.,DepMap_ID %in% hits_long$CL)
 lineage_info %<>% unique(.)

@@ -56,7 +56,7 @@ rule dep_frac_per_cell_line:
 rule dep_frac_per_cell_line_by_lineage:
 	input:
 		"data/raw/hgnc-complete-set.csv",
-		"data/raw/depmap-cell-line-annotations.csv",
+		"data/raw/depmap-cell-line-annotations-v131.csv",
 		"data/processed/dependency-probability-crispr-matched.csv",
 		"data/processed/dependency-probability-rnai-matched.csv",
 		"tables/Supplemental-Table-2.csv"
@@ -78,7 +78,7 @@ rule SSD_example_profile:
 rule HVD_example_profile:
 	input:
 		"data/raw/gene-effect-scaled-crispr-matched.csv",
-		"data/raw/depmap-cell-line-annotations.csv",
+		"data/raw/depmap-cell-line-annotations-v131.csv",
 		"data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
 		"data/raw/gene-set-library.csv"
 	output:

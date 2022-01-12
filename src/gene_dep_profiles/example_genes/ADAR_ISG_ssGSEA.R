@@ -6,7 +6,7 @@ source("src/packages_paths.R")
 crispr_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix()
 
 #Exclude blood cell lines
-master <- fread(file.path(data_raw,"depmap-cell-line-annotations.csv"))
+master <- fread(file.path(data_raw,"depmap-cell-line-annotations-v131.csv"))
 master %<>% subset(.,`Primary Site` == "haematopoietic_and_lymphoid_tissue")
 
 crispr_gs <- crispr_gs[!(rownames(crispr_gs) %in% master$DepMap_ID),]

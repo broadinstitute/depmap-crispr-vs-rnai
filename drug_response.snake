@@ -1,0 +1,52 @@
+
+rule filter_by_drug_target:
+	input:
+		"data/raw/" + "drug-screen-target-annotations-rephub.csv",
+		"data/raw/" + "hgnc-complete-set.csv",
+		"data/raw/" + "drug-screen-viability-info-prism.csv",
+		"data/raw/" + "drug-screen-viability-info-ctd2.csv",
+		"data/raw/" + "drug-screen-viability-info-gdsc.csv",
+		"data/raw/" + "gene-effect-unscaled-target-dict.csv",
+		"data/raw/" + "gene-effect-scaled-crispr-matched.csv",
+		"data/raw/" + "drug-screen-viability-ctd2.csv",
+		"data/raw/" + "drug-screen-viability-gdsc.csv",
+		"data/raw/" + "drug-screen-viability-prism.csv"
+	output:
+		"data/processed/" + "drug-screen-viability-filtered-ctd2.csv",
+		"data/processed/" + "drug-screen-viability-filtered-gdsc.csv",
+		"data/processed/" + "drug-screen-viability-filtered-prism.csv",
+		"data/processed/" + "drug-screen-target-annotations-rephub-shared.csv"
+	shell:
+		"Rscript src/drug_response/filter_compounds_by_target.R"
+
+rule remove_PC1_from_drug_viability:
+	input:
+		"data/raw/" + "depmap-cell-line-annotations-v846.csv",
+		"data/processed/" + "drug-screen-viability-filtered-ctd2.csv",
+		"data/processed/" + "drug-screen-viability-filtered-gdsc.csv",
+		"data/processed/" + "drug-screen-viability-filtered-prism.csv"
+	output:
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-ctd2.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-gdsc.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-prism.csv"
+	shell:
+		"Rscript src/drug_response/regress_drug_data_PC1.R"
+
+rule drug_gene_correlations:
+	input:
+		"data/raw/" + "hgnc-complete-set.csv",
+		"data/raw/" + "gene-effect-scaled-crispr-matched.csv",
+		"data/raw/" + "gene-effect-scaled-rnai-matched.csv",
+		"data/raw/" + "gene-effect-unscaled-target-dict.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-ctd2.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-gdsc.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-prism.csv",
+		"data/processed/" + "drug-screen-target-annotations-rephub-shared.csv",
+		"tables/" + "Supplemental-Table-2.csv"
+	output:
+		"data/processed/" + "drug-screen-genetic-targets-correlations.csv"
+	shell:
+		"Rscript src/drug_response/drug_gene_correlations.R"
+
+
+
