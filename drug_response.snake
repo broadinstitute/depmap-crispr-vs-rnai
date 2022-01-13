@@ -73,9 +73,18 @@ rule ctd2_correlation_scatter:
 	input:
 		"data/processed/" + "drug-screen-genetic-targets-correlations.csv"
 	output:
-		"figures/drug_response_CTD2_scatter_CRISPR_RNAi.pdf"
+		"figures/drug_response_CTD2_correlation_scatter.pdf"
 	shell:
 		"Rscript src/drug_response/CTD2_correlation_scatter.R"
+
+rule prism_gdsc_correlation_scatter:
+	input:
+		"data/processed/" + "drug-screen-genetic-targets-correlations.csv"
+	output:
+		"figures/drug_response_prism_correlation_scatter.pdf",
+		"figures/drug_response_gdsc_correlation_scatter.pdf"
+	shell:
+		"Rscript src/drug_response/PRISM_GDSC_correlation_scatter.R"
 
 rule ctd2_correlation_examples:
 	input:
@@ -91,6 +100,17 @@ rule ctd2_correlation_examples:
 		"figures/drug_response_CTD2_AZD7762_CHEK1.pdf"
 	shell:
 		"Rscript src/drug_response/CTD2_example_correlations.R"
+
+rule prism_correlation_example:
+	input:
+		"data/raw/" + "gene-effect-scaled-crispr-matched.csv",
+		"data/raw/" + "gene-effect-scaled-rnai-matched.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-prism.csv",
+		"data/processed/" + "drug-screen-viability-info-prism.csv"
+	output:
+		"figures/drug_response_PRISM_CHKinhibitor_CHEK1.pdf"
+	shell:
+		"Rscript src/drug_response/PRISM_example_correlations_CHEK1.R"
 
 rule fraction_of_top_cors_faceted_by_pandep:
 	input:
