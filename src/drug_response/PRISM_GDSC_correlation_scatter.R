@@ -8,6 +8,8 @@ for (dset in c("gdsc","prism")){
   summary <- subset(univariate_res,drug_dataset == dset)
   summary %<>% subset(.,best_drug_target_cor)
   
+  print(paste0(dset,": ",length(unique(summary$target))," gene targets, ",length(unique(summary$broad_id))," drugs"))
+  
   crispr <- subset(summary,genetic_perturbation == "CRISPR") %>%
     dplyr::select(.,target_drug_pair,pearson_r,rank,dose)
   colnames(crispr) <- paste0("CRISPR_",colnames(crispr))
@@ -19,6 +21,7 @@ for (dset in c("gdsc","prism")){
   rnai %<>% rename(.,target_drug_pair=RNAi_target_drug_pair)
   
   plot_df <- left_join(rnai,crispr,by="target_drug_pair")
+  
   plot_df$diff <- plot_df$RNAi_pearson_r - plot_df$CRISPR_pearson_r
   
   highlights <- c("MDM2","PIK3CA","BRAF","EGFR","CHEK1","UBA3","BIRC2") #PRISM + GDSC
