@@ -6,7 +6,6 @@
 *.pdf
 *.png
 *.zip
-Public-file-location.txt
 
 #snakemake
 .snakemake
