@@ -1,4 +1,4 @@
-dataset	format	Figshare_ID
+dataset	format	Figshare_link
 RNAseq	matrix	https://figshare.com/ndownloader/files/33903422?private_link=05dffd12695e600ea108
 ssGSEA	matrix	https://figshare.com/ndownloader/files/33903428?private_link=05dffd12695e600ea108
 CN	matrix	https://figshare.com/ndownloader/files/33903416?private_link=05dffd12695e600ea108
@@ -11,9 +11,3 @@ metabolomics	matrix	https://figshare.com/ndownloader/files/33903380?private_link
 RRBS	matrix	https://figshare.com/ndownloader/files/33903389?private_link=05dffd12695e600ea108
 Lin	matrix	https://figshare.com/ndownloader/files/33903413?private_link=05dffd12695e600ea108
 engineered	matrix	https://figshare.com/ndownloader/files/33903419?private_link=05dffd12695e600ea108
-MatchRelated	matrix	
-CRISPR-GS	matrix	
-CRISPR-confounders	table	
-RNAi-GS	matrix	
-RNAi-confounders	table	
-MutMis	matrix	
