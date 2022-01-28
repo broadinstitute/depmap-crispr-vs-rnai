@@ -14,6 +14,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from scipy.stats import pearsonr
 import json
 import os.path
+from pathlib import Path
 
 import math
 import random
@@ -108,7 +109,7 @@ class QuantileKFold(KFold):
     def __init__(self, n_splits=5, shuffle=False, random_state=None):
         super().__init__(n_splits, shuffle, random_state)
 
-        
+
     def split(self, X, y, groups=None):
         """Generate indices to split data into training and test set.
         Parameters
@@ -151,7 +152,7 @@ class QuantileKFold(KFold):
                 train_pos = df[df['fold'] != i]['position']
                 test_pos = df[df['fold'] == i]['position']
                 yield [train_pos.tolist(),test_pos.tolist()]
-        
+
         split_generator = split_pairs(df=df,nfolds=self.n_splits)
         return split_generator
 
@@ -198,7 +199,7 @@ def single_fit(column, X, Y, model_types, splitter, scoring, nfeatures=10, round
                 print('test features: \n%r\n' %x.iloc[test])
                 print('train column: \n%r\n' %y.iloc[train])
                 print('test column: \n%r\n' %y.iloc[test])
-                raise e 
+                raise e
             model_prediction.iloc[test] = ypred[:]
             score.append(scoring(y.iloc[test], ypred))
             n += 1
@@ -220,11 +221,11 @@ def single_fit(column, X, Y, model_types, splitter, scoring, nfeatures=10, round
 #################### E N S E M B L E #########################
 ##############################################################
 
-class EnsembleRegressor:    
+class EnsembleRegressor:
     def __init__(self, model_types, nfolds=3, scoring=soft_roc_auc, Splitter=StratifiedKFold, rounding=False):
 
         '''
-        model_types: [{'Name': str, 'ModelClass': class,  'kwargs': dict}] Model classes will be initiated with the 
+        model_types: [{'Name': str, 'ModelClass': class,  'kwargs': dict}] Model classes will be initiated with the
             dict of keyword arguments
         '''
         self.model_types = model_types
@@ -238,7 +239,7 @@ class EnsembleRegressor:
         self.columns = None
         self.rounding = rounding
         self.predictions = None
-        
+
     def check_x(self, X):
         xerror = ValueError(
             'X must be a list or array with a feature set dataframe of matching indices for each model \
@@ -251,7 +252,7 @@ class EnsembleRegressor:
         for df in X[1:]:
             if not all(df.index == X[0].index):
                 raise xerrorcheck_random_state
-        
+
     def fit(self, X, Y, columns=None, report_freq=20):
         '''
         X: [{ModelClass: dataframe}
@@ -270,7 +271,7 @@ class EnsembleRegressor:
         curr_time = start_time
         for i, col in enumerate(columns):
             ind = Y.index[Y[col].notnull()]
-            output = single_fit(column=col, X=[x.loc[ind] for x in X], Y=Y.loc[ind], model_types=self.model_types, splitter=self.splitter, 
+            output = single_fit(column=col, X=[x.loc[ind] for x in X], Y=Y.loc[ind], model_types=self.model_types, splitter=self.splitter,
                       scoring=self.scoring, rounding=self.rounding)
             for key in outputs.keys():
                     outputs[key][col] = output[key]
@@ -291,14 +292,14 @@ class EnsembleRegressor:
         else:
             for i in range(len(self.model_types)):
                 self.predictions[i] = self.predictions[i].join(outputs['predictions'][i])
-        
+
     def predict(self, X):
         self.check_x(X)
         return pd.DataFrame(
             {column: self.trained_models[column][self.best_indices[column]].predict(X[self.best_indices[column]])
                             for column in self.columns},
                            index = X[0].index)
-    
+
     def save_results(self, feat_outfile, pred_outfile):
         columns = ['gene', 'model']
         for i in range(self.nfolds):
@@ -306,7 +307,7 @@ class EnsembleRegressor:
         columns.append('best')
         for i in range(10):
             columns.extend(['feature%i' %i, 'feature%i_importance' %i])
-        
+
         melted = pd.DataFrame(columns=columns)
         for gene in self.trained_models.keys():
             for i in range(len(self.model_types)):
@@ -336,13 +337,13 @@ class EnsembleRegressor:
 
 def gene_feature_filter(df, gene_name):
     genes = [x.split('_')[0].split(' ')[0] for x in df.columns]
-    mask = np.array([s == gene_name for s in genes], dtype=np.bool)
+    mask = np.array([s == gene_name for s in genes], dtype=bool)
     return mask
 
 
 class SelfFeatureForest(RandomForestRegressor):
     '''
-    Uses only features matching ("like") the target (+ `reserved_columns` which are always included). 
+    Uses only features matching ("like") the target (+ `reserved_columns` which are always included).
     Uses the target's name with everything after the first space stripped off to match columns in the feature set.
     A custom target name can be passed with the call to "fit" to be used for finding related features.
     '''
@@ -350,7 +351,7 @@ class SelfFeatureForest(RandomForestRegressor):
         self.reserved_columns = reserved_columns
         RandomForestRegressor.__init__(self, **kwargs)
         self.feature_names = []
-        
+
     def fit(self, X, y, name=None, **kwargs):
         if name is None:
             name = y.name
@@ -361,12 +362,12 @@ class SelfFeatureForest(RandomForestRegressor):
         features = X.loc[:, self.feature_names]
         RandomForestRegressor.fit(self, features.values, y.loc[features.index].values, **kwargs)
         #RandomForestRegressor.fit(self, features.as_matrix(), y.loc[features.index].values, **kwargs)
-        
+
     def predict(self, X, **kwargs):
         features = X.loc[:, self.feature_names]
         return RandomForestRegressor.predict(self, features.values, **kwargs)
         #return RandomForestRegressor.predict(self, features.as_matrix(), **kwargs)
-        
+
     def get_feature_series(self, n_features=None):
         if n_features is None:
             n_features = len(self.feature_names)
@@ -376,7 +377,7 @@ class SelfFeatureForest(RandomForestRegressor):
 
 class RelatedFeatureForest(SelfFeatureForest):
     '''
-    Uses a two-column list of related features to select only features related to the target (+ `reserved_columns` which are always included). 
+    Uses a two-column list of related features to select only features related to the target (+ `reserved_columns` which are always included).
     Uses the target's name with everything after the first space stripped off to match to related features.
     A custom target name can be passed with the call to "fit" to be used for finding related features.
     '''
@@ -397,6 +398,7 @@ class RelatedFeatureForest(SelfFeatureForest):
             mask = mask | gene_feature_filter(X, partner)
         self.feature_names = X.columns[mask]
         features = X[self.feature_names]
+        print('Fitting related model with X shape', features.shape)
         RandomForestRegressor.fit(self, features, y.loc[features.index].values, **kwargs)
 
 
@@ -409,7 +411,7 @@ class KFilteredForest(RandomForestRegressor):
         RandomForestRegressor.__init__(self, **kwargs)
         self.filter = SelectKBest(score_func=f_regression, k=k)
         self.var_threshold = var_threshold
-        
+
     def fit(self, X, y, **kwargs):
         self.mask1 = varfilter(X, self.var_threshold)
         x = X.loc[:, X.columns[self.mask1]]
@@ -421,12 +423,12 @@ class KFilteredForest(RandomForestRegressor):
         RandomForestRegressor.fit(self, x.values, y, **kwargs)
         #RandomForestRegressor.fit(self, x.as_matrix(), y, **kwargs)
 
-        
+
     def predict(self, X, **kwargs):
         x = X.loc[:, self.feature_names]
         return RandomForestRegressor.predict(self, x.values, **kwargs)
         #return RandomForestRegressor.predict(self, x.as_matrix(), **kwargs)
-    
+
     def get_feature_series(self, n_features):
         if n_features is None:
             n_features = len(self.feature_names)
@@ -436,11 +438,11 @@ class KFilteredForest(RandomForestRegressor):
 class PandasForest(RandomForestRegressor):
     '''
     A simple wrapper for RandomForestRegressor that plays nice with dataframes and series instead of numpy arrays
-    '''    
+    '''
     def fit(self, X, y, **kwargs):
         self.feature_names = X.columns.tolist()
         RandomForestRegressor.fit(self, X, y, **kwargs)
-        
+
     def get_feature_series(self, n_features):
         if n_features is None:
             n_features = len(self.feature_names)
@@ -459,7 +461,7 @@ def assemble_feature_set(target_samples, matrices = {}, tables = {}, required = 
         target_samples: indeces of the Y target matrix to filter by
         required: list of datasets (by name) that are required for valid samples
             including the name of a table includes all the columns
-        fill_na: 
+        fill_na:
 
     Returns:
         dataframe: X
@@ -473,7 +475,7 @@ def assemble_feature_set(target_samples, matrices = {}, tables = {}, required = 
 
     features = {}
     valid_samples = set(target_samples)
-    
+
     #Load matrices, filter indexes by target_samples, add matrix to features dict
     if len(matrices) > 0:
         for key, val in matrices.items():
@@ -497,8 +499,8 @@ def assemble_feature_set(target_samples, matrices = {}, tables = {}, required = 
             features.update({key: num_vars})
             #features.update({(s+"_"+key): num_vars.loc[:,num_vars.columns.isin([s])] for s in num_vars.columns})
             #Determine which columns are categorical and add each as a one-hot encoded matrix
-            #TODO change the lineage info format when loading confounders from taiga so that the column name isn't 
-            #     already included in the value. This way the original column name can be appended to column names of 
+            #TODO change the lineage info format when loading confounders from taiga so that the column name isn't
+            #     already included in the value. This way the original column name can be appended to column names of
             #     one-hot matrix and it will protect against losing track of where features came from if 2 columns of
             #     table share the same value
             cat_vars = df.select_dtypes(exclude=numerics)
@@ -551,7 +553,7 @@ def assemble_feature_set(target_samples, matrices = {}, tables = {}, required = 
     megafeature.dropna(how='all', axis=1, inplace=True) #drops variables that are all missing
     if fill_na:
         print('filling NaNs')
-        megafeature.fillna(0, inplace=True) #THIS FILLS ALL NA with 0. Shouldn't it impute based on the average instead?????????? 
+        megafeature.fillna(0, inplace=True) #THIS FILLS ALL NA with 0. Shouldn't it impute based on the average instead??????????
     return megafeature
 
 def run_model(X, Y, model, nfolds, feat_output, pred_output, start_col=0, end_col=None, task='regress', relation_table=None):
@@ -591,7 +593,7 @@ def run_model(X, Y, model, nfolds, feat_output, pred_output, start_col=0, end_co
         ValueError: If `param2` is equal to `param1`.
 
     """
-    
+
     if end_col is None:
         end_col = Y.shape[1]
     print('aligning features')
@@ -606,9 +608,9 @@ def run_model(X, Y, model, nfolds, feat_output, pred_output, start_col=0, end_co
         constant_features = [s for s in X.columns if any(s.endswith(end) for end in model['Exempt'])]
     else:
         constant_features = []
-    
+
     new_model = {'Name': model['Name']}
-    
+
     if (model['Relation'] == "All") & (X.shape[1] <= 1000):
         new_model['ModelClass'] = PandasForest
         new_model['kwargs'] = dict(max_depth=8, n_estimators=100, min_samples_leaf=5)
@@ -621,17 +623,17 @@ def run_model(X, Y, model, nfolds, feat_output, pred_output, start_col=0, end_co
     elif model['Relation'] == "MatchRelated":
         new_model['ModelClass'] = RelatedFeatureForest
         new_model['kwargs'] = dict(reserved_columns=constant_features, relations=relation_table[['target', 'partner']], max_depth=8, n_estimators=100, min_samples_leaf=5)
-        
+
     models = [new_model]
-    
+
     if len(X) != len(Y):
         raise RuntimeError('length of X and Y do not match (shapes %r and %r)' %(X.shape, Y.shape))
     Xtrain = [X]
     assert len(Xtrain) == len(models), "number of models %i does not match number of feature sets %i" %(len(models), len(Xtrain))
     for i, x in enumerate(Xtrain):
         assert x.shape[1] > 0, "feature set %i does not have any columns" %i
-        assert all(x.index == Y.index), "feature set %i index does not match Y index\n\n%r" %(i, x.iloc[:5, :5]) 
-           
+        assert all(x.index == Y.index), "feature set %i index does not match Y index\n\n%r" %(i, x.iloc[:5, :5])
+
     print('creating TDA ensemble')
     if task == 'classify':
         ensemble = EnsembleRegressor(model_types=models, nfolds=nfolds, rounding=True, Splitter=StratifiedKFold, scoring=soft_roc_auc)
@@ -639,7 +641,7 @@ def run_model(X, Y, model, nfolds, feat_output, pred_output, start_col=0, end_co
         ensemble = EnsembleRegressor(model_types=models, nfolds=nfolds, rounding=False, Splitter=QuantileKFold, scoring=r2_score)
     else:
         raise ValueError('task must be "classify" or "regress"')
-    
+
     columns = Y.columns[start_col : end_col]
     ensemble.fit(Xtrain, Y, columns)
     print('Finished fitting')
@@ -647,6 +649,8 @@ def run_model(X, Y, model, nfolds, feat_output, pred_output, start_col=0, end_co
 
 if __name__ == '__main__':
     args = getParser().parse_args()
+
+    Path("data/temp/").mkdir(parents=True, exist_ok=True)
 
     #Read the model definitions
     with open(args.model_config) as f:
@@ -696,15 +700,11 @@ if __name__ == '__main__':
     if (model_def["Relation"] == "MatchTarget") | (model_def["Relation"] == "All"):
         related_table = None
     else:
-        related_table = pd.read_csv(all_files[model_def["Relation"]]) 
+        related_table = pd.read_csv(all_files[model_def["Relation"]])
         related_table.partner = [s.split(' ')[0] for s in related_table.partner]
         related_table.target = [s.split(' ')[0] for s in related_table.target]
 
-    outfile_feat = args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.feat_suffix
-    outfile_pred = args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.pred_suffix
+    outfile_feat = 'data/temp/' + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.feat_suffix
+    outfile_pred = 'data/temp/' + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.pred_suffix
 
     run_model(X, Y, model=model_def, nfolds=args.nfolds, feat_output=outfile_feat, pred_output=outfile_pred, task=task_mode, relation_table=related_table)
-
-
-
-

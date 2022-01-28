@@ -64,6 +64,6 @@ print(paste0("Test set gene filter of input: ",paste(dim(ensemble_input),collaps
 # Ouput file
 ensemble_input %<>% as.data.frame(.) %>% rownames_to_column(.,var="Row.name")
 write_csv(ensemble_input,outfile_name)
-if ( !((ncol(ensemble_input) >= 10) & (nrow(ensemble_input) >= 50))){
+if ( !((ncol(ensemble_input) >= 3) & (nrow(ensemble_input) >= 50))){
   stop(paste0("Not enough samples to run ensemble on ",group_name," subset"))
 }

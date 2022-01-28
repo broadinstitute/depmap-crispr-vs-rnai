@@ -20,7 +20,6 @@ feat_suffix="features.csv"
 pred_suffix="predictions.csv"
 data_name=${11}
 
-filename="data/processed/ensemble-sparkle-params-regress-rnai-matched.csv"
 {
     read
     while IFS=',', read -r start end model
@@ -46,7 +45,6 @@ filename="data/processed/ensemble-sparkle-params-regress-rnai-matched.csv"
 
 #fetch results from cloud
 mkdir ${data_name}-tasks
-gsutil -m cp gs://tda/${job_name}/*/*.csv ${data_name}-tasks/
 
 #compile tasks per model files
-Rscript src/ensemble_prediction_pipeline/compile_ensemble_tasks.R $task_params $feat_suffix $pred_suffix ${data_name}-tasks $data_name
+Rscript src/ensemble_prediction_pipeline/compile_ensemble_tasks.R $task_params $feat_suffix $pred_suffix data/temp/${data_name}-tasks $data_name
