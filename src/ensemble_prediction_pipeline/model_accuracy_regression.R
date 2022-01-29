@@ -17,6 +17,9 @@ feats <- read_csv(feat_file)
 preds <- as.data.frame(read_csv(pred_file)) %>% column_to_rownames(.,var="Row.name")
 preds <- preds[rownames(pr),]
 
+print(head(pr))
+print(head(preds))
+
 #Calculate correlation between obs and pred
 r <- mapply(cor,preds,pr[,colnames(preds)],use="complete")
 

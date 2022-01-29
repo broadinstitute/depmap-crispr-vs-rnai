@@ -1,3 +1,11 @@
+rule generate_dataset_figures:
+	input:
+		"figures/selecting_datasets_reagents_SSMD_per_dataset.pdf",
+		"figures/selecting_datasets_reagents_SSMD_CL_example.pdf",
+		"figures/selecting_datasets_reagents_pairwise_cors_boxplot.pdf",
+		"figures/selecting_datasets_processed_vs_unproc_AUC.pdf",
+		"figures/selecting_datasets_proc_vs_unproc_dataset_cor_boxplot.pdf",
+		"figures/selecting_datasets_proc_vs_unprc_topcor_recall.pdf"
 
 rule reagent_level_SSMD:
 	input:

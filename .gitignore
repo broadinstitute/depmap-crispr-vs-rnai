@@ -33,3 +33,6 @@ report_files/*
 #MacOS
 .DS_Store
 .gitignore~
+
+#Project files
+data/

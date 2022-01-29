@@ -209,7 +209,7 @@ def single_fit(column, X, Y, model_types, splitter, scoring, nfeatures=10, round
         try:
             features.append(model.get_feature_series(nfeatures))
         except AttributeError:
-            features.append(pd.Series(dtype=np.float))
+            features.append(pd.Series(dtype=np.float64))
         gc.collect()
     best_index = np.argmax(np.mean(scores, axis=1))
     if not return_models:
@@ -548,7 +548,7 @@ def assemble_feature_set(target_samples, matrices = {}, tables = {}, required = 
             print(key)
             print(val[:5])
             print()
-    megafeature = megafeature.astype(np.float)
+    megafeature = megafeature.astype(np.float64)
     megafeature.dropna(how='all', axis=0, inplace=True) #drops samples that have all missing values
     megafeature.dropna(how='all', axis=1, inplace=True) #drops variables that are all missing
     if fill_na:
@@ -704,7 +704,7 @@ if __name__ == '__main__':
         related_table.partner = [s.split(' ')[0] for s in related_table.partner]
         related_table.target = [s.split(' ')[0] for s in related_table.target]
 
-    outfile_feat = 'data/temp/' + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.feat_suffix
-    outfile_pred = 'data/temp/' + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.pred_suffix
+    outfile_feat = 'data/temp/' + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.feat_suffix + '.csv'
+    outfile_pred = 'data/temp/' + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.pred_suffix + '.csv'
 
     run_model(X, Y, model=model_def, nfolds=args.nfolds, feat_output=outfile_feat, pred_output=outfile_pred, task=task_mode, relation_table=related_table)

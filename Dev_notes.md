@@ -1,6 +1,10 @@
 Update the dockerfile present for local run
 Create docker file for snakemake for remote execution
 
+
+Set jobs and variance count to proper numbers. They have been set low for testing
+fusion removed for internal. Need to be recreated
+
 ### efficacy_specificity.snake
 The snakemake DAG is not proper. The input of the first rule does not use other rules so a lot of the other runs are never called
 

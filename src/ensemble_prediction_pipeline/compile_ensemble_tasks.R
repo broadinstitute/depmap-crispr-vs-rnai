@@ -10,10 +10,11 @@ feat_suffix <- args[2]
 pred_suffix <- args[3]
 tmp_file_dir <- args[4]
 data_name <- args[5]
+target <- args[6]
 
 param_table <- read.csv(sparkle_params,stringsAsFactors = F)
-param_table$featfile <- paste0(param_table$model,"_",param_table$start,"_",param_table$end,"_",feat_suffix)
-param_table$predfile <- paste0(param_table$model,"_",param_table$start,"_",param_table$end,"_",pred_suffix)
+param_table$featfile <- paste0(param_table$model,"_",param_table$start,"_",param_table$end,"_",feat_suffix,'.csv')
+param_table$predfile <- paste0(param_table$model,"_",param_table$start,"_",param_table$end,"_",pred_suffix,'.csv')
 
 #### HACK for compiling with missing task files
 # existing_files <- list.files(tmp_file_dir)
@@ -23,7 +24,7 @@ param_table$predfile <- paste0(param_table$model,"_",param_table$start,"_",param
 # }
 # param_table %<>% subset(.,featfile %in% existing_files)
 # param_table %<>% subset(.,predfile %in% existing_files)
-# 
+#
 # write_csv(param_table,sparkle_params)
 
 
@@ -31,7 +32,7 @@ for (m in unique(param_table$model)){
   model_files <- subset(param_table,model == m)
   pred_files <- model_files$predfile
   feat_files <- model_files$featfile
-  
+
   #If rownames are consistant across all files, use cbind instead of full join
   pred_list <- list()
   for (i in 1:length(pred_files)){
@@ -40,13 +41,13 @@ for (m in unique(param_table$model)){
       pred_list[[as.character(i)]] <- tmp_df
     }
   }
-  
+
   t <- table(unlist(lapply(pred_list,nrow)))
   common_length <- as.numeric(names(t)[which.max(t)])
   bind_pred_list <- Filter(function(x){nrow(x) == common_length},pred_list)
   join_pred_list <- Filter(function(x){nrow(x) != common_length},pred_list)
   rm(pred_list)
-  
+
   bind_pred_list <- lapply(bind_pred_list,function(x){x %<>% column_to_rownames(.,var="Row.name")})
   cl_order <- lapply(bind_pred_list,rownames)
   cl_order <- Reduce(intersect,cl_order)
@@ -58,15 +59,15 @@ for (m in unique(param_table$model)){
   } else {
     stop("Cannot bind columns of predictions across common length")
   }
-  
+
   if (length(join_pred_list) > 1){
     join_pred_list <- join_pred_list %>% reduce(full_join, by="Row.name")
     model_preds <- full_join(bind_pred_list,join_pred_list,by="Row.name")
-    write_csv(model_preds,paste0(data_name,"-",m,"-",pred_suffix))
+    write_csv(model_preds,paste0(data_name,"-",m,"-",pred_suffix,"-",target,'.csv'))
   } else {
-    write_csv(bind_pred_list,paste0(data_name,"-",m,"-",pred_suffix))
+    write_csv(bind_pred_list,paste0(data_name,"-",m,"-",pred_suffix,"-",target,'.csv'))
   }
-  
+
   feat_list <- list()
   for (i in 1:length(feat_files)){
     tmp_df <- fread(file.path(tmp_file_dir,feat_files[i]))
@@ -75,6 +76,6 @@ for (m in unique(param_table$model)){
     }
   }
   model_feats <- bind_rows(feat_list)
-  write_csv(model_feats,paste0(data_name,"-",m,"-",feat_suffix))
-  
+  write_csv(model_feats,paste0(data_name,"-",m,"-",feat_suffix,"-",target,'.csv'))
+
 }
