@@ -3,6 +3,30 @@ rule ensemble_summary:
         ensemble_summary = expand(
             "data/processed/" + "ensemble-prediction-summary-{target}.csv", target=config["PERTURBATION"])
 
+rule load_data:
+    output:
+        "data/raw/depmap-omics-expression-rnaseq-tpm-18Q4.csv",
+        "data/raw/depmap-omics-expression-ssgsea-19Q1.csv",
+        "data/raw/depmap-omics-cn-gene-internal-18q4.csv",
+        "data/raw/depmap-omics-mutation-damaging.csv",
+        "data/raw/depmap-omics-mutation-other.csv",
+        "data/raw/depmap-omics-mutation-hotspot.csv",
+        "data/raw/depmap-omics-fusions-internal-20q1-onehot.csv",
+        "data/raw/ccle-omics-rppa.csv",
+        "data/raw/ccle-omics-proteomics-normalized-abundance.csv",
+        "data/raw/ccle-omics-metabolomics.csv",
+        "data/raw/ccle-omics-rrbs-tss-1kb.csv",
+        "data/raw/depmap-cell-line-lineage-onehot.csv",
+        "data/raw/depmap-omics-engineered-features.csv",
+        "data/raw/gene-set-related-features.csv",
+        "data/raw/gene-effect-scaled-crispr-matched.csv",
+        "data/raw/gene-effect-scaled-crispr-matched-confounders.csv",
+        "data/raw/gene-effect-scaled-rnai-matched.csv",
+        "data/raw/gene-effect-scaled-rnai-matched-confounders.csv"
+    shell:
+        "Rscript src/figshare_downloader.R"
+
+
 rule aggregate_models:
     input:
         model_summary = expand(
