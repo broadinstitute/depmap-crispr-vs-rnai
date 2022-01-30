@@ -1,12 +1,18 @@
 {
 	"RUN-ID" : "CRISPR_vs_RNAi_manuscript",
 	"LIBRARY": ["crispr-avana","crispr-ky","crispr-matched","rnai-achilles","rnai-drive","rnai-matched"],
-	"PERTURBATION": ["crispr-matched","rnai-matched"],
+	"PERTURBATION": ["crispr-matched"],
 	"METRIC": ["pandependency","dependency-probability","LRT"],
 	"crispr-avana": {"GS": "data/raw/gene-effect-scaled-crispr-avana.csv"},
 	"crispr-ky": {"GS": "data/raw/gene-effect-scaled-crispr-ky.csv"},
 	"crispr-matched": {"GS": "data/raw/gene-effect-scaled-crispr-matched.csv", "Confounders": "data/raw/gene-effect-scaled-crispr-matched-confounders.csv"},
 	"rnai-achilles": {"GS": "data/processed/gene-effect-scaled-rnai-achilles.csv"},
 	"rnai-drive": {"GS": "data/processed/gene-effect-scaled-rnai-drive.csv"},
-	"rnai-matched": {"GS": "data/raw/gene-effect-scaled-rnai-matched.csv", "Confounders": "data/raw/gene-effect-scaled-rnai-matched-confounders.csv"}
+	"rnai-matched": {"GS": "data/raw/gene-effect-scaled-rnai-matched.csv", "Confounders": "data/raw/gene-effect-scaled-rnai-matched-confounders.csv"},
+	"MODELS": ["Unbiased", "Related"],
+	"MODEL_DEF": "src/ensemble_prediction_pipeline/config/ensemble-config.json",
+	"FEATURES": "src/ensemble_prediction_pipeline/config/Public-file-location.txt",
+	"FILTER": "none",
+	"COUNT": "10",
+	"TASK": "regress"
 }

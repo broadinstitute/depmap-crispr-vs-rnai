@@ -76,10 +76,3 @@ rule gene_effect_scaled_benchmarks:
 		"figures/efficacy_specificity_processed_scaled_benchmark_sets.pdf"
 	shell:
 		"Rscript src/efficacy_specificity/processed_scaled_violin.R"
-
-
-
-
-
-
-

@@ -1,7 +1,7 @@
 [{
 		"Name": "Unbiased",
 		"Confounders": "True",
-		"Features": ["RNAseq", "ssGSEA", "CN", "MutDam", "MutMis", "MutHot", "Fusion", "RPPA", "proteomics", "metabolomics", "RRBS", "Lin", "engineered"],
+		"Features": ["RNAseq", "ssGSEA", "CN", "MutDam", "MutMis", "MutHot", "RPPA", "Fusion", "proteomics", "metabolomics", "RRBS", "Lin", "engineered"],
 		"Required": ["Confounders", "RNAseq", "Lin"],
 		"Relation": "All",
 		"Exempt": null,

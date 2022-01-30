@@ -94,4 +94,3 @@ rule RAB6A_example:
 		"figures/predictive_markers_RAB6A_boxplot.pdf"
 	shell:
 		"Rscript src/predictive_markers/RAB6A_example.R"
-
