@@ -10,6 +10,21 @@ rule euler_digram:
 	shell:
 		"Rscript src/pandependency_agreement/euler_diagrams.R"
 
+rule geneset_enrichment_of_pandeps:
+	input:
+		"tables/" + "Supplemental-Table-1.csv",
+		"tables/" + "Supplemental-Table-2.csv",
+		"data/raw/" + "hgnc-complete-set.csv",
+		"data/raw/" + "gene-set-msigdb-onehot.rds"
+	output:
+		"figures/" + "pandependency_agreement_BIOCARTA_odds_ratio_scatter.pdf",
+		"figures/" + "pandependency_agreement_GO_odds_ratio_scatter.pdf",
+		"figures/" + "pandependency_agreement_HALLMARK_odds_ratio_scatter.pdf",
+		"figures/" + "pandependency_agreement_KEGG_odds_ratio_scatter.pdf",
+		"data/processed" + "pandependency_agreement_enrichment_of_shared_or_distinct.csv"
+	shell:
+		"Rscript geneset_enrichment_shared_vs_distinct.R"
+
 rule ROC_predicting_CRISPR_pandep_class:
 	input:
 		"data/raw/hgnc-complete-set.csv",
