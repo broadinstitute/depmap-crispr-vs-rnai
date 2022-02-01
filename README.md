@@ -12,12 +12,12 @@ Conversion notes:
 # Comparing DepMap CRISPR and RNAi datasets
 
 
-## Goal
+## Motivation
 
 Reproduce the analyses, figures, and tables presented in Krill-Burger et al., “Partial gene suppression improves identification of cancer vulnerabilities when CRISPR-Cas9 knockout is pan-lethal”. 
 
 
-## How to use this repository
+## Repository structure
 
 
 
@@ -33,3 +33,15 @@ Reproduce the analyses, figures, and tables presented in Krill-Burger et al., �
         * ensemble_prediction.snake: Ensemble prediction pipeline to fit random forest models to all gene effect profiles using multi-omics and cell line annotation predictive features
         * predictive_markers.snake: Summary of ensemble prediction results and CYCLOPS analysis (Fig. 2, Supplemental Table 3)
         * drug_response.snake: Drug-gene target associations (Fig. 3, Supplemental Fig. 16)
+
+
+
+## Installing dependencies
+    
+Required R packages are in `env/general/requirements.R`. However, we suggest using Docker for reproducibility. The image can be built from the Dockerfile:
+```
+$cd ./env/general
+$docker build -t depmap-crispr-vs-rnai .
+```
+
+

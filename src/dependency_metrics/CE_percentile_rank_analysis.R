@@ -1,9 +1,7 @@
 
+source("src/packages_paths.R")
+
 require(plyr)
-library(tidyverse)
-library(magrittr)
-library(data.table)
-library(readr)
 
 args <- commandArgs(trailingOnly = TRUE)
 data_file <- args[1]
