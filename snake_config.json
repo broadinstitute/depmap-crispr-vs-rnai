@@ -1,7 +1,7 @@
 {
 	"RUN-ID" : "CRISPR_vs_RNAi_manuscript",
 	"LIBRARY": ["crispr-avana","crispr-ky","crispr-matched","rnai-achilles","rnai-drive","rnai-matched"],
-	"PERTURBATION": ["crispr-matched"],
+	"PERTURBATION": ["crispr-matched", "rnai-matched"],
 	"METRIC": ["pandependency","dependency-probability","LRT"],
 	"crispr-avana": {"GS": "data/raw/gene-effect-scaled-crispr-avana.csv"},
 	"crispr-ky": {"GS": "data/raw/gene-effect-scaled-crispr-ky.csv"},
