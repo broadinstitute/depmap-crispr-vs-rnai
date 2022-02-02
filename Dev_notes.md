@@ -1,6 +1,7 @@
 docker run -v $(pwd):/tmp/pipeline \
 -it depmap-crispr-vs-rnai:latest
 
+snakemake -s ensemble_prediction.snake --configfile snake_config.json --cores 1
 
 
 
