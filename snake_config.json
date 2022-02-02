@@ -12,7 +12,7 @@
 	"MODELS": ["Unbiased", "Related"],
 	"MODEL_DEF": "src/ensemble_prediction_pipeline/config/ensemble-config.json",
 	"FEATURES": "src/ensemble_prediction_pipeline/config/Public-file-location.txt",
-	"FILTER": "variance",
+	"FILTER": "none",
 	"COUNT": "10",
 	"TASK": "regress"
 }
