@@ -21,31 +21,31 @@ pred_suffix="predictions"
 data_name=${11}
 target=${12}
 
-# {
-#     read
-#     while IFS=',', read -r start end model
-#     do
-# 			echo "Start : $start"
-# 			echo "End : $end"
-# 			echo "Model : $model"
-# 			python 'src/ensemble_prediction_pipeline/RunEnsemble.py' \
-# 				--model-config $model_config \
-# 				--task-mode $task_mode \
-# 				--targets $targets \
-# 				--nfolds $folds \
-# 				--confounders $confounders \
-# 				--feature-dir . \
-# 				--feature-info $file_info \
-# 				--model $model \
-# 				--start-col $start \
-# 				--end-col $end \
-# 				--feat-suffix $feat_suffix \
-# 				--pred-suffix $pred_suffix
-#     done
-# } < $task_params
+{
+    read
+    while IFS=',', read -r start end model
+    do
+			echo "Start : $start"
+			echo "End : $end"
+			echo "Model : $model"
+			python 'src/ensemble_prediction_pipeline/RunEnsemble.py' \
+				--model-config $model_config \
+				--task-mode $task_mode \
+				--targets $targets \
+				--nfolds $folds \
+				--confounders $confounders \
+				--feature-dir . \
+				--feature-info $file_info \
+				--model $model \
+				--start-col $start \
+				--end-col $end \
+				--feat-suffix $feat_suffix \
+				--pred-suffix $pred_suffix
+    done
+} < $task_params
 
 #Move results from proper folder
-#mv data/temp data/processed/$data_name-$target
+mv data/temp data/processed/$data_name-$target
 
 #compile tasks per model files
 Rscript src/ensemble_prediction_pipeline/compile_ensemble_tasks.R $task_params $feat_suffix $pred_suffix data/processed/$data_name-$target data/processed/$data_name $target

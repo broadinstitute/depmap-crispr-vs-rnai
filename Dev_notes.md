@@ -1,3 +1,10 @@
+docker run -v $(pwd):/tmp/pipeline \
+-it depmap-crispr-vs-rnai:latest
+
+
+
+
+
 Update the dockerfile present for local run
 Create docker file for snakemake for remote execution
 
