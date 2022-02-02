@@ -28,7 +28,7 @@ target=${12}
 			echo "Start : $start"
 			echo "End : $end"
 			echo "Model : $model"
-			python 'src/ensemble_prediction_pipeline/RunEnsemble.py' \
+			python3 'src/ensemble_prediction_pipeline/RunEnsemble.py' \
 				--model-config $model_config \
 				--task-mode $task_mode \
 				--targets $targets \
