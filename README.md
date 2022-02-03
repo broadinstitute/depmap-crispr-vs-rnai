@@ -14,7 +14,7 @@ Conversion notes:
 
 ## Motivation
 
-Reproduce the analyses, figures, and tables presented in Krill-Burger et al., “Partial gene suppression improves identification of cancer vulnerabilities when CRISPR-Cas9 knockout is pan-lethal”. 
+Reproduce the analyses, figures, and tables presented in Krill-Burger et al., “Partial gene suppression improves identification of cancer vulnerabilities when CRISPR-Cas9 knockout is pan-lethal”.
 
 
 ## Repository structure
@@ -22,7 +22,7 @@ Reproduce the analyses, figures, and tables presented in Krill-Burger et al., �
 
 
 * Organization of R and Python scripts into Snakefiles
-    * Snakemake is a workflow language to orchestrate a series of tasks (rules) where each task has defined inputs, outputs, and a shell command to execute (indicates the script being run). 
+    * Snakemake is a workflow language to orchestrate a series of tasks (rules) where each task has defined inputs, outputs, and a shell command to execute (indicates the script being run).
     * Each Snakefile (designated by the ‘.snake’ suffix) corresponds to a section of related results
         * selecting_datasets.snake: Screen quality comparisons across reagent-level and processed CERES or DEMETER2 gene effects for all large genetic perturbation datasets (Supplemental Fig. 1, 2)
         * high_conf_deps.snake: Defining a high-confidence dependency set (Supplemental Fig. 3, 4, Supplemental Table 1)
@@ -37,11 +37,19 @@ Reproduce the analyses, figures, and tables presented in Krill-Burger et al., �
 
 
 ## Installing dependencies
-    
+
 Required R packages are in `env/general/requirements.R`. However, we suggest using Docker for reproducibility. The image can be built from the Dockerfile:
 ```
-$cd ./env/general
-$docker build -t depmap-crispr-vs-rnai .
+$docker build -f env/Dockerfile -t depmap-crispr-vs-rnai .
 ```
 
+You can also download a pre-built Docker image with the follow command
+```
+$docker pull us.gcr.io/cds-docker-containers/depmap-crispr-vs-rnai:1
+```
 
+This can then be used to run the different Snakemake files which can generate the required data and figures. An example of such a command is this, which will help generate the results for the ensemble_prediction_pipeline. This should be run form the root directory of this project.
+```
+$docker run -v $(pwd):/tmp/pipeline -it depmap-crispr-vs-rnai:latest
+$snakemake -s ensemble_prediction.snake --configfile snake_config.json --cores
+```
