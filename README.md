@@ -23,7 +23,7 @@ Reproduce the analyses, figures, and tables presented in Krill-Burger et al., �
 
 * Organization of R and Python scripts into Snakefiles
     * [Snakemake](https://snakemake.readthedocs.io/) is a workflow language to orchestrate a series of tasks (rules) where each task has defined inputs, outputs, and a shell command to execute (indicates the script being run).
-    * Each Snakefile (designated by the ‘.snake’ suffix) corresponds to a section of related results
+    * Each Snakefile (designated by the ‘.snake’ suffix) corresponds to a section of related results and can be found in the root directory of this code repository
         * Supplemental Fig. 1, 2: Screen quality comparisons across reagent-level and processed CERES or DEMETER2 gene effects for all large genetic perturbation datasets 
             * selecting_datasets.snake
         * Supplemental Fig. 3, 4, Supplemental Table 1: Defining a high-confidence dependency set
@@ -46,26 +46,28 @@ Reproduce the analyses, figures, and tables presented in Krill-Burger et al., �
 
 
 ## Installing dependencies
-<<<<<<< Updated upstream
-
-Required R packages are in `env/general/requirements.R`. However, we suggest using Docker for reproducibility. The image can be built from the Dockerfile:
-=======
     
 Required R packages are in `env/requirements.R`. We suggest using [Docker](https://docs.docker.com/) for reproducibility. A Docker image with the required R packages and Snakemake can be built from the Dockerfile:
->>>>>>> Stashed changes
+
 ```
-$docker build -f env/Dockerfile -t jkrillbu/depmap-crispr-vs-rnai .
+$docker build -f env/Dockerfile -t jkrillbu/depmap-crispr-vs-rnai:1 .
 ```
 
 Alternatively, a pre-built Docker image can be downloaded from DockerHub with the following command
 ```
-$docker pull jkrillbu/depmap-crispr-vs-rnai
+$docker pull jkrillbu/depmap-crispr-vs-rnai:1
 ```
 
 One way to use the Docker image locally is to create an interacive container. Executing the following commands will create a link between `/tmp/pipeline` within the container and the root of the code repository:
 ```
 $git clone https://github.com/broadinstitute/depmap-crispr-vs-rnai.git
 $cd depmap-crispr-vs-rnai
-$docker run -v $(pwd):/tmp/pipeline -it depmap-crispr-vs-rnai:latest
+$docker run -v $(pwd):/tmp/pipeline -it jkrillbu/depmap-crispr-vs-rnai:1
 ```
 
+Now individual scripts or snakefiles can be executed. For example, the `src/figshare_downloader.R` R script is run with the following command
+```
+root@id:/tmp/pipeline# Rscript src/figshare_downloader.R
+```
+
+## Loading data
