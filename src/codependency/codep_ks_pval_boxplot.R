@@ -39,7 +39,7 @@ ggplot(data=results,aes(x=pandep_label,y=ks_score,fill=tech)) +
   scale_y_continuous(breaks=b,labels=parse(text=l)) +
   ylab("Co-dependency Enrichment (P-Value)") +
   xlab("")
-# ggsave("codep_enrichment_boxplot_pandep_facet_summary.pdf",width=2.5,height=2.6)
+ggsave(file.path("figures","codependency_enrichment_boxplot_pandep_facet_summary.pdf"),width=2.5,height=2.6)
 # 
 # wilcox.test(subset(results,pandep & (tech == "CRISPR" ))$ks_score,
 #             subset(results,pandep & (tech == "RNAi" ))$ks_score)

@@ -1,0 +1,70 @@
+rule generate_networks:
+	input:
+		"data/raw/" + "hgnc-complete-set-2019.csv",
+		"tables/" + "Supplemental-Table-1.csv",
+		"tables/" + "Supplemental-Table-2.csv",
+		"data/raw/" + "gene-effect-scaled-crispr-matched.csv",
+		"data/raw/" + "gene-effect-scaled-rnai-matched.csv"
+	output:
+		"data/processed/" + "codependency_CRISPR_pearson_baseline.rds",
+		"data/processed/" + "codependency_RNAi_pearson_baseline.rds",
+		"data/processed/" + "CRISPR-RNAi_CRISPR-weight-matrix.rds",
+		"data/processed/" + "CRISPR-RNAi_RNAi-weight-matrix.rds",
+		"data/processed/" + "codependency-CRISPR-RNAi-SNF.rds"
+	shell:
+		"Rscript src/codependency/run_SNF.R"
+
+
+rule network_enrichment:
+	input:
+		"data/raw/" + "gene-set-related-features.csv",
+		"data/raw/" + "gene-set-kegg.csv",
+		"data/processed/" + "codependency_CRISPR_pearson_baseline.rds",
+		"data/processed/" + "codependency_RNAi_pearson_baseline.rds",
+		"data/processed/" + "codependency-CRISPR-RNAi-SNF.rds"
+		"tables/" + "Supplemental-Table-2.csv"
+	output:
+		"data/processed/" + "codependency_network_enrichment.csv"
+	shell:
+		"Rscript src/codependency/codependency_network_enrichment.R"
+
+rule network_enrichmet_boxplot:
+	input:
+		"tables/" + "Supplemental-Table-1.csv",
+		"tables/" + "Supplemental-Table-2.csv",
+		"data/raw/" + "hgnc-complete-set.csv",
+		"data/processed/" + "codependency_network_enrichment.csv"
+	output:
+		"figures/" + "codependency_enrichment_boxplot_pandep_facet_summary.pdf"
+	shell:
+		"Rscript src/codependency/codep_ks_pval_boxplot.R"
+
+rule network_topN_related_barplot:
+	input:
+		"tables/" + "Supplemental-Table-1.csv",
+		"tables/" + "Supplemental-Table-2.csv",
+		"data/raw/" + "hgnc-complete-set.csv",
+		"data/processed/" + "codependency_network_enrichment.csv"
+	output:
+		"figures/" + "codependency_CRISPR-RNAi-SNF_topN_barplot.pdf"
+	shell:
+		"Rscript src/codependency/topN_related_barplot.R"
+
+rule network_example_graphs:
+	input:
+		"data/raw/" + "gene-set-related-features.csv",
+		"data/raw/" + "gene-set-kegg.csv",
+		"data/processed/" + "codependency_network_enrichment.csv",
+		"data/processed/" + "codependency_CRISPR_pearson_baseline.rds",
+		"data/processed/" + "codependency_RNAi_pearson_baseline.rds",
+		"data/processed/" + "codependency-CRISPR-RNAi-SNF.rds"
+	output:
+		"figures/" + "codependency_CRISPR_MED16_network.pdf",
+		"figures/" + "codependency_CRISPR_RPS21_network.pdf",
+		"figures/" + "codependency_RNAi_MED16_network.pdf",
+		"figures/" + "codependency_RNAi_RPS21_network.pdf",
+		"figures/" + "codependency_SNF_MED16_network.pdf",
+		"figures/" + "codependency_SNF_RPS21_network.pdf"
+	shell:
+		"Rscript src/codependency/network_examples.R"
+
