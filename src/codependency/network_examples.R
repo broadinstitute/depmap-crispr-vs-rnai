@@ -1,3 +1,5 @@
+source("src/packages_paths.R")
+
 library(igraph)
 
 related <- fread(file.path(data_raw,"gene-set-related-features.csv"))

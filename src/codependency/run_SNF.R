@@ -38,6 +38,14 @@ d2_comb <- genetic_data[["rnai"]]
 
 keep_ids <- colnames(avana)[extract_entrez(colnames(avana)) %in% t2$entrez_id]
 
+# Codependency figures were generated with an earlier version of 
+# the high-confidence dependency list, which differed by 6 genes.
+# Therefore, the gene filter is modified by the 6 genes to match 
+# the earlier version and reproduce the current version of figures, 
+# but the following 2 lines will be removed from subsequent versions.
+keep_ids <- c(keep_ids,c("ALG8 (79053)","IQGAP1 (8826)"))
+keep_ids <- keep_ids[!(keep_ids %in% c("ATP5PO (539)","DHFR2 (200895)","ABRAXAS1 (84142)","COP1 (64326)"))] 
+
 avana <- avana[,keep_ids]
 d2 <- d2_comb[,keep_ids]
 
