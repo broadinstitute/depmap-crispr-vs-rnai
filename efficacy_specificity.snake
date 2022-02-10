@@ -1,3 +1,15 @@
+# Outputs of this overall workflow are listed as inputs to the first rule since 
+# Snakemake uses the first rule to contruct the workflow DAG
+rule main_efficacy_specificity:
+	input:
+		"figures/" + "efficacy_specificity_scatter_mean_gene_effect_legend.pdf",
+		"figures/" + "efficacy_specificity_mean_reagent_LFC.pdf",
+		"figures/" + "efficacy_specificity_mean_reagent_LFC_combRNAi.pdf",
+		"data/processed/" + "mean_reagent_combRNAi_boxplot_params.rds",
+		"data/processed/" + "processed_unscaled_gene_effects.rds",
+		"figures/" + "efficacy_specificity_processed_zscored_benchmark_boxplots.pdf",
+		"figures/" + "efficacy_specificity_processed_zscored_benchmark_sets_combRNAi.pdf",
+		"figures/" + "efficacy_specificity_processed_scaled_benchmark_sets.pdf"
 
 rule gene_effect_means:
 	input:

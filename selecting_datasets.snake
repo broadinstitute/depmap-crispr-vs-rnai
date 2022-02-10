@@ -1,11 +1,15 @@
-rule generate_dataset_figures:
+# Outputs of this overall workflow are listed as inputs to the first rule since 
+# Snakemake uses the first rule to contruct the workflow DAG
+rule main_selecting_datasets:
 	input:
-		"figures/selecting_datasets_reagents_SSMD_per_dataset.pdf",
-		"figures/selecting_datasets_reagents_SSMD_CL_example.pdf",
-		"figures/selecting_datasets_reagents_pairwise_cors_boxplot.pdf",
-		"figures/selecting_datasets_processed_vs_unproc_AUC.pdf",
-		"figures/selecting_datasets_proc_vs_unproc_dataset_cor_boxplot.pdf",
-		"figures/selecting_datasets_proc_vs_unprc_topcor_recall.pdf"
+		"figures/" + "selecting_datasets_reagents_SSMD_per_dataset.pdf",
+		"figures/" + "selecting_datasets_reagents_SSMD_CL_example.pdf",
+		"figures/" + "selecting_datasets_reagents_pairwise_cors_boxplot.pdf",
+		"data/processed/" + "mean_reagent_lfc.rds",
+		"figures/" + "selecting_datasets_processed_vs_unproc_AUC.pdf",
+		"figures/" + "selecting_datasets_proc_vs_unproc_dataset_cor_boxplot.pdf",
+		"data/processed/" + "processed_unprocessed_scaled_gene_effects.rds",
+		"figures/" + "selecting_datasets_proc_vs_unprc_topcor_recall.pdf"
 
 rule reagent_level_SSMD:
 	input:
@@ -20,7 +24,6 @@ rule reagent_level_SSMD:
 	output:
 		"figures/selecting_datasets_reagents_SSMD_per_dataset.pdf",
 		"figures/selecting_datasets_reagents_SSMD_CL_example.pdf"
-
 	shell:
 		"Rscript src/selecting_datasets/unprocessed_reagents/SSMD_across_CLs.R"
 

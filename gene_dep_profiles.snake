@@ -1,4 +1,25 @@
-
+# Outputs of this overall workflow are listed as inputs to the first rule since 
+# Snakemake uses the first rule to contruct the workflow DAG
+rule main_gene_dep_profiles:
+	input:
+		"figures/" + "gene_deps_profiles_WRN_LRT_RNAi_illustration.pdf",
+		"figures/" + "gene_deps_profiles_WRN_LRT_CRISPR_illustration.pdf",
+		"figures/" + "gene_deps_profiles_LRT_onco_enrichment.pdf",
+		"figures/" + "gene_deps_profiles_LRT_tsg_enrichment.pdf",
+		"figures/" + "gene_deps_profiles_density_joyplot.pdf",
+		"figures/" + "gene_deps_profiles_abs_bars.pdf",
+		"figures/" + "gene_deps_profiles_flow_diagram.pdf",
+		"figures/" + "gene_deps_profiles_totalfrac_perCL_stackedbar.pdf",
+		"figures/" + "gene_deps_profiles_totalfrac_per_CL_byDisease.pdf",
+		"figures/" + "gene_deps_profiles_depfrac_per_CL_byDisease.pdf",
+		"figures/" + "gene_deps_profiles_BRAF_hotspot_density.pdf",
+		"figures/" + "gene_deps_profiles_ADAR_IFN.pdf",
+		"figures/" + "gene_deps_profiles_pandependency_scatter.pdf",
+		"figures/" + "gene_deps_profiles_variance_scatter.pdf",
+		"figures/" + "gene_deps_profiles_LRT_scatter.pdf",
+		"figures/" + "gene_deps_profiles_depCount_scatter_1x2_grid.pdf",
+		"figures/" + "gene_deps_profiles_probabilities_density2d_2x3_grid.pdf"
+		
 rule lrt_illustration:
 	input:
 		"data/raw/gene-effect-scaled-crispr-avana.csv",

@@ -1,3 +1,17 @@
+# Outputs of this overall workflow are listed as inputs to the first rule since 
+# Snakemake uses the first rule to contruct the workflow DAG
+rule main_predictive_markers:
+	input:
+		"tables/" + "Supplemental-Table-3.csv",
+		"figures/" + "predictive_markers_gw_accurate_model_count_barplot.pdf",
+		"figures/" + "predictive_markers_smoothed_accuracy_funcOf_depFrac.pdf",
+		"data/processed/" + "hgnc_gene_arm_location.csv",
+		"data/processed/" + "CYCLOPS_annotations.csv",
+		"figures/" + "predictive_markers_CYCLOPS_or_related_hist.pdf",
+		"figures/" + "predictive_markers_CYCLOPS_hist.pdf",
+		"figures/" + "predictive_markers_PRMT5_boxplot.pdf",
+		"figures/" + "predictive_markers_RBBP4_density2d_smooth.pdf",
+		"figures/" + "predictive_markers_RAB6A_boxplot.pdf"
 
 rule ensemble_regression_summary:
 	input:

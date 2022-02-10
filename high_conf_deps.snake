@@ -1,3 +1,25 @@
+# Outputs of this overall workflow are listed as inputs to the first rule since 
+# Snakemake uses the first rule to contruct the workflow DAG
+rule main_high_conf_deps:
+	input:
+		"data/processed/" + "multilib_ce_percentile_results.csv",
+		"figures/" + "pandependency_90th_percentile_ranks_CRISPR.pdf",
+		"figures/" + "pandependency_90th_percentile_ranks_RNAi.pdf",
+		"figures/" + "pandependency_90th_percentile_ranks_RNAi_benchmark.pdf",
+		"figures/" + "pandependency_90th_percentile_ranks_CRISPR_benchmark.pdf",
+		"data/processed/" + "CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv",
+		"data/processed/" + "RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv",
+		"figures/" + "high_confidence_depFrac_vs_correlation.pdf",
+		"figures/" + "high_confidence_depFrac_vs_variance.pdf",
+		"data/processed/" + "library_agreement.csv",
+		"figures/" + "high_confidence_crispr_pandep_mosaic.pdf",
+		"figures/" + "high_confidence_rnai_pandep_mosaic.pdf",
+		"figures/" + "high_confidence_crispr_total_recall_curve.pdf",
+		"figures/" + "high_confidence_rnai_total_recall_curve.pdf",
+		"figures/" + "high_confidence_crispr_nodep_mosaic.pdf",
+		"figures/" + "high_confidence_rnai_nodep_mosaic.pdf",
+		"tables/" + "Supplemental-Table-1.csv"
+
 rule pandependency_per_library:
 	input:
 		"data/raw/gene-effect-scaled-crispr-avana.csv",

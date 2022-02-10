@@ -1,5 +1,5 @@
-
-
+# Outputs of this overall workflow are listed as inputs to the first rule since 
+# Snakemake uses the first rule to contruct the workflow DAG
 rule main_codependency:
 	input:
 		"data/processed/" + "codependency_CRISPR_pearson_baseline.rds",

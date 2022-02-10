@@ -1,4 +1,3 @@
-
 rule gene_deps_table:
     input:
         results = expand("{analysis}-{dataset}.csv", dataset=config["LIBRARY"], analysis=config["METRIC"]),
