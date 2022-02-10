@@ -1,17 +1,30 @@
+# Processed data requirements from other workflows
+# "data/processed/gene-effect-scaled-rnai-achilles.csv"
+# "data/processed/gene-effect-scaled-rnai-drive.csv"
+# "data/processed/dependency-probability-crispr-ky.csv"
+# "data/processed/dependency-probability-crispr-avana.csv"
+# "data/processed/dependency-probability-rnai-achilles.csv"
+# "data/processed/dependency-probability-rnai-drive.csv"
+# "data/processed/pandependency-score-crispr-avana.csv"
+# "data/processed/pandependency-score-crispr-ky.csv"
+# "data/processed/pandependency-score-rnai-achilles.csv"
+# "data/processed/pandependency-score-rnai-drive.csv"
+
+
 # Outputs of this overall workflow are listed as inputs to the first rule since 
 # Snakemake uses the first rule to contruct the workflow DAG
 rule main_high_conf_deps:
 	input:
 		"data/processed/" + "multilib_ce_percentile_results.csv",
+		"data/processed/" + "CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv",
+		"data/processed/" + "RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv",
+		"data/processed/" + "library_agreement.csv",
 		"figures/" + "pandependency_90th_percentile_ranks_CRISPR.pdf",
 		"figures/" + "pandependency_90th_percentile_ranks_RNAi.pdf",
 		"figures/" + "pandependency_90th_percentile_ranks_RNAi_benchmark.pdf",
 		"figures/" + "pandependency_90th_percentile_ranks_CRISPR_benchmark.pdf",
-		"data/processed/" + "CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv",
-		"data/processed/" + "RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv",
 		"figures/" + "high_confidence_depFrac_vs_correlation.pdf",
 		"figures/" + "high_confidence_depFrac_vs_variance.pdf",
-		"data/processed/" + "library_agreement.csv",
 		"figures/" + "high_confidence_crispr_pandep_mosaic.pdf",
 		"figures/" + "high_confidence_rnai_pandep_mosaic.pdf",
 		"figures/" + "high_confidence_crispr_total_recall_curve.pdf",

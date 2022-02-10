@@ -1,7 +1,5 @@
 
-data_raw <- file.path("data","raw")
-data_processed <- file.path("data","processed")
-source(file.path("src","id_utility.R"))
+source("src/packages_paths.R")
 
 # gene ID updates which were performed on RNAi datasets as part of target discovery pipeline
 hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
