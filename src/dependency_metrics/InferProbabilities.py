@@ -1,7 +1,7 @@
 
 import argparse
 import sys
-sys.path.append('/usr/tda/packages/Python')
+sys.path.append('/tmp/pipeline/src/dependency_metrics/packages/Python')
 import pandas as pd
 import numpy as np
 import inference

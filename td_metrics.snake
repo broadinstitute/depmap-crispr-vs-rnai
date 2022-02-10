@@ -42,7 +42,7 @@ rule inference:
     output:
         pr_outfile = "data/processed/dependency-probability-{dataset}.csv"
     shell:
-        "python src/dependency_metrics/InferProbabilities.py --gene-effect {input.gene_effect} --tpm {input.tpm} --pos-cntrl {input.essential} --neg-cntrl {input.non_essential} --pr-outfile {output.pr_outfile}"
+        "python3 src/dependency_metrics/InferProbabilities.py --gene-effect {input.gene_effect} --tpm {input.tpm} --pos-cntrl {input.essential} --neg-cntrl {input.non_essential} --pr-outfile {output.pr_outfile}"
 
 rule PR_bins:
     input:
