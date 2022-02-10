@@ -1,9 +1,4 @@
 
-# require(pROC)
-# require(ggsci)
-# require(scales)
-# require(grid)
-
 source("src/packages_paths.R")
 
 #################################### All datasets ####################################
@@ -15,11 +10,11 @@ file_dict <- readRDS(file.path(data_processed,"mean_reagent_lfc.rds"))
 names(file_dict) <- paste0(names(file_dict),"-Mean")
 file_dict <- lapply(file_dict,function(x){t(x)})
 
-# proc_dict <- readRDS("/Users/mburger/dynamic-duo-biorxiv/figures/benchmarking/processed/processed_unscaled_gene_effects.rds")
-proc_dict <- list("CRISPR-Avana"=fread(file.path(data_raw,"gene-effect-unscaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread(file.path(data_raw,"gene-effect-unscaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread(file.path(data_raw,"gene-effect-unscaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-Achilles"=fread(file.path(data_raw,"gene-effect-unscaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+proc_dict <- list("CRISPR-Avana"="gene-effect-unscaled-crispr-avana.csv",
+                  "CRISPR-KY"="gene-effect-unscaled-crispr-ky.csv",
+                  "RNAi-DRIVE"="gene-effect-unscaled-rnai-drive.csv",
+                  "RNAi-Achilles"="gene-effect-unscaled-rnai-achilles.csv")
+proc_dict <- lapply(proc_dict,function(x){fread(file.path(data_raw,x)) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)})
 
 names(proc_dict) <- paste0(names(proc_dict),"-Corrected")
 proc_dict <- lapply(proc_dict,function(x){colnames(x) <- extract_entrez(colnames(x)); return(x)})

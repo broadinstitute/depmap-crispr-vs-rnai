@@ -1,20 +1,18 @@
+source("src/packages_paths.R")
+
 library(ggridges)
 library(ggbeeswarm)
-library(tidyverse)
-library(data.table)
-library(magrittr)
-
-source("src/id_utility.R")
 
 #### Reagent level data
-file_dict <- list("RNAi-Achilles"=fread("data/raw/lfc-unscaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread("data/raw/lfc-unscaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-Avana"=fread("data/raw/lfc-unscaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread("data/raw/lfc-unscaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+file_dict <- list("RNAi-Achilles"="lfc-unscaled-rnai-achilles.csv",
+                  "RNAi-DRIVE"="lfc-unscaled-rnai-drive.csv",
+                  "CRISPR-Avana"="lfc-unscaled-crispr-avana.csv",
+                  "CRISPR-KY"="lfc-unscaled-crispr-ky.csv")
+file_dict <- lapply(file_dict,function(x){fread(file.path(data_raw,x)) %>% column_to_rownames(.,var="V1")})
 
-CRISPR_map <- fread("data/raw/reagent-to-gene-map-sgrna.csv")
+CRISPR_map <- fread(file.path(data_raw,"reagent-to-gene-map-sgrna.csv"))
 CRISPR_map$entrez_id %<>% as.character(.)
-RNAi_map <- fread("data/raw/reagent-to-gene-map-shrna.csv")
+RNAi_map <- fread(file.path(data_raw,"reagent-to-gene-map-shrna.csv"))
 RNAi_map$entrez_id %<>% as.character(.)
 
 genes <- intersect(CRISPR_map$entrez_id[CRISPR_map$Avana],CRISPR_map$entrez_id[CRISPR_map$KY])
@@ -26,12 +24,12 @@ reagent_dict <- list("CRISPR-Avana"=subset(CRISPR_map,Avana & (entrez_id %in% ge
                      "RNAi-Achilles"=subset(RNAi_map,(Achilles_55k | Achilles_98k) & (entrez_id %in% genes)),
                      "RNAi-DRIVE"=subset(RNAi_map,DRIVE & (entrez_id %in% genes)))
 
-pos_cntrl <- fread("data/raw/control-essential-genes-core.csv",sep=",")
+pos_cntrl <- fread(file.path(data_raw,"control-essential-genes-core.csv"),sep=",")
 pos_cntrl <- pos_cntrl$gene
 pos_cntrl <- extract_entrez(pos_cntrl)
 pos_cntrl <- intersect(pos_cntrl,genes)
 
-neg_cntrl <- fread("data/raw/control-nonessential-genes.csv",sep=",")
+neg_cntrl <- fread(file.path(data_raw,"control-nonessential-genes.csv"),sep=",")
 neg_cntrl <- neg_cntrl$gene
 neg_cntrl <- extract_entrez(neg_cntrl)
 neg_cntrl <- intersect(neg_cntrl,genes)
@@ -85,7 +83,7 @@ ggplot(SSMD_df,aes(x=dataset,y=cell_line_SSMD,color=dataset)) +
   ylab("SSMD") +
   xlab("") +
   theme(legend.position = "none")
-ggsave("figures/selecting_datasets_reagents_SSMD_per_dataset.pdf",width=3.5,height=2.5)
+ggsave(file.path("figures","selecting_datasets_reagents_SSMD_per_dataset.pdf"),width=3.5,height=2.5)
 
 
 #### Example cell line distributions
@@ -136,7 +134,7 @@ ggplot(data=dset_cl_values,aes(x=LFC,y=dataset,fill=control_set,color=control_se
   theme(strip.background =element_rect(fill="white")) +
   theme(strip.text.x = element_text(margin = margin(.25,0,.25,0, "cm"),face = "bold")) +
   theme(plot.margin = margin(l=0,r=0,unit="cm"))
-ggsave("figures/selecting_datasets_reagents_SSMD_CL_example.pdf",width=4,height=2.5)
+ggsave(file.path("figures","selecting_datasets_reagents_SSMD_CL_example.pdf"),width=4,height=2.5)
 
 #SSMD of the single cell line for each experiment
 for (dset in names(reagent_dict)){

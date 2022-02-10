@@ -18,7 +18,7 @@ rule ensemble_regression_summary:
 		"data/processed/ensemble-prediction-summary-crispr-matched.csv",
 		"data/processed/ensemble-prediction-summary-rnai-matched.csv"
 	output:
-		"tables/Supplemental-Table-3a.csv"
+		"tables/Supplemental-Table-3.csv"
 	shell:
 		"Rscript src/predictive_markers/predictability_summary_table.R"
 

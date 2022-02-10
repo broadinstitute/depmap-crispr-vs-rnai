@@ -1,20 +1,11 @@
 
-library(tidyverse)
-library(magrittr)
-library(data.table)
-
-# library(ggsci)
-# library(scales)
-# library(grid)
-
+source("src/packages_paths.R")
 
 #################################### All datasets ####################################
 
-source("src/id_utility.R")
+hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 
-hgnc <- fread("data/raw/hgnc-complete-set.csv")
-
-file_dict <- readRDS("data/processed/processed_unprocessed_scaled_gene_effects.rds")
+file_dict <- readRDS(file.path(data_processed,"processed_unprocessed_scaled_gene_effects.rds"))
 
 cls <- lapply(file_dict,function(x){rownames(x)})
 cls <- Reduce(intersect,cls)
@@ -107,9 +98,7 @@ for (i in 1:nrow(plot_vals)){
 plot_vals$status <- "Unprocessed"
 plot_vals$status[plot_vals$group == "Corrected-Corrected"] <- "Processed"
 
-mypal = ggsci::pal_npg()(9)
-mypal <- mypal[c(3,9)]
-names(mypal) <- c("Processed","Unprocessed")
+mypal <- c("Processed"="#00A087FF","Unprocessed"="#7E6148FF" )
 
 plot_vals$d_label <- factor(plot_vals$d_label,levels=c("KY-Achilles","Avana-Achilles","Avana-DRIVE","KY-DRIVE"))
 
@@ -122,7 +111,7 @@ ggplot(plot_vals, aes(x=d_label, y=top_cors, fill=status)) +
   scale_fill_manual(values=mypal) +
   theme(legend.title=element_blank()) +
   theme(legend.position = "none") 
-ggsave("figures/selecting_datasets_proc_vs_unprc_topcor_recall.pdf",height=2.5,width=2.7)
+ggsave(file.path("figures","selecting_datasets_proc_vs_unprc_topcor_recall.pdf"),height=2.5,width=2.7)
 
 
 

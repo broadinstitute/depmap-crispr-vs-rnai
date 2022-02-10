@@ -1,15 +1,14 @@
-# require(ggsci)
-# require(scales)
 
 source("src/packages_paths.R")
 
-hgnc <- fread("data/raw/hgnc-complete-set.csv")
+hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 
 #Load all unscaled reagent sets
-file_dict <- list("RNAi-Achilles"=fread(file.path(data_raw,"lfc-unscaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread(file.path(data_raw,"lfc-unscaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-Avana"=fread(file.path(data_raw,"lfc-unscaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread(file.path(data_raw,"lfc-unscaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+file_dict <- list("RNAi-Achilles"="lfc-unscaled-rnai-achilles.csv",
+                  "RNAi-DRIVE"="lfc-unscaled-rnai-drive.csv",
+                  "CRISPR-Avana"="lfc-unscaled-crispr-avana.csv",
+                  "CRISPR-KY"="lfc-unscaled-crispr-ky.csv")
+file_dict <- lapply(file_dict,function(x){fread(file.path(data_raw,x)) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)})
 
 #filter for cell lines that overlap all 4 datasets
 cls <- lapply(file_dict,function(x){colnames(x)})

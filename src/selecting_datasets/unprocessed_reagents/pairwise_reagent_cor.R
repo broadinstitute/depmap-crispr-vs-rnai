@@ -1,22 +1,20 @@
+source("src/packages_paths.R")
 
-library(ggsci)
-
-source("src/id_utility.R")
-
-hgnc <- fread("data/raw/hgnc-complete-set.csv")
+hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 
 #Load all reagent sets
-file_dict <- list("RNAi-Achilles"=fread("data/raw/lfc-unscaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1"),
-                  "RNAi-DRIVE"=fread("data/raw/lfc-unscaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1"),
-                  "CRISPR-Avana"=fread("data/raw/lfc-unscaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1"),
-                  "CRISPR-KY"=fread("data/raw/lfc-unscaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1"))
+file_dict <- list("RNAi-Achilles"="lfc-unscaled-rnai-achilles.csv" ,
+                  "RNAi-DRIVE"="lfc-unscaled-rnai-drive.csv",
+                  "CRISPR-Avana"="lfc-unscaled-crispr-avana.csv",
+                  "CRISPR-KY"="lfc-unscaled-crispr-ky.csv")
+file_dict <- lapply(file_dict,function(x){fread(file.path(data_raw,x)) %>% column_to_rownames(.,var="V1")})
 
 #Scale by cell line to reduce correlations driven by batch effects
 file_dict <- lapply(file_dict,function(x){scale(x)})
 
 #Intersect genes across all 4 datasets
-CRISPR_map <- fread("data/raw/reagent-to-gene-map-sgrna.csv")
-RNAi_map <- fread("data/raw/reagent-to-gene-map-shrna.csv")
+CRISPR_map <- fread(file.path(data_raw,"reagent-to-gene-map-sgrna.csv"))
+RNAi_map <- fread(file.path(data_raw,"reagent-to-gene-map-shrna.csv"))
 
 genes <- intersect(CRISPR_map$entrez_id[CRISPR_map$Avana],CRISPR_map$entrez_id[CRISPR_map$KY])
 genes <- intersect(genes,RNAi_map$entrez_id[RNAi_map$Achilles_55k])
@@ -112,9 +110,7 @@ plot_df$max_var_bin[plot_df$max_var_perc > .5] <- "50-75"
 plot_df$max_var_bin[plot_df$max_var_perc > .75] <- "75-100"
 plot_df$max_var_bin <- factor(plot_df$max_var_bin,levels=c("0-25","25-50","50-75","75-100"))
 
-mypal = pal_npg()(5)
-mypal <- mypal[c(1:2,4:5)]
-names(mypal) <- c("CRISPR-KY","RNAi-DRIVE","RNAi-Achilles","CRISPR-Avana")
+mypal <- c("CRISPR-KY"="#E64B35FF","RNAi-DRIVE"="#4DBBD5FF","RNAi-Achilles"="#3C5488FF","CRISPR-Avana"="#F39B7FFF")
 
 ggplot(plot_df,aes(x=median_var_bin,y=median_cor,fill=dataset)) +
   geom_boxplot(size=.25,outlier.size = .25) +
@@ -124,6 +120,6 @@ ggplot(plot_df,aes(x=median_var_bin,y=median_cor,fill=dataset)) +
   scale_fill_manual(values=mypal) +
   theme(legend.title=element_blank()) +
   theme(legend.position = "none")
-ggsave("figures/selecting_datasets_reagents_pairwise_cors_boxplot.pdf",height=3,width=3.5)
+ggsave(file.path("figures","selecting_datasets_reagents_pairwise_cors_boxplot.pdf"),height=3,width=3.5)
 
 

@@ -1,21 +1,20 @@
 
-# require(ggsci)
-
 #################################### All datasets ####################################
 
-source("src/id_utility.R")
+source("src/packages_paths.R")
 
-hgnc <- fread("data/raw/hgnc-complete-set.csv")
+hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 
 #Get reagent mean unprocessed and CERES or D2 processed data for overlapping CLs and genes
-file_dict <- readRDS("/Users/mburger/dynamic-duo-biorxiv/figures/benchmarking/unprocessed/mean_reagent_lfc.rds")
+file_dict <- readRDS(file.path(data_processed,"mean_reagent_lfc.rds"))
 names(file_dict) <- paste0(names(file_dict),"-Mean")
 file_dict <- lapply(file_dict,function(x){t(x)})
 
-proc_dict <- list("CRISPR-Avana"=fread("data/raw/gene-effect-unscaled-crispr-avana.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "CRISPR-KY"=fread("data/raw/gene-effect-unscaled-crispr-ky.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-DRIVE"=fread("data/raw/gene-effect-unscaled-rnai-drive.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                  "RNAi-Achilles"=fread("data/raw/gene-effect-unscaled-rnai-achilles.csv") %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+proc_dict <- list("CRISPR-Avana"="gene-effect-unscaled-crispr-avana.csv",
+                  "CRISPR-KY"="gene-effect-unscaled-crispr-ky.csv",
+                  "RNAi-DRIVE"="gene-effect-unscaled-rnai-drive.csv",
+                  "RNAi-Achilles"="gene-effect-unscaled-rnai-achilles.csv")
+proc_dict <- lapply(proc_dict,function(x){fread(file.path(data_raw,x)) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)})
 
 names(proc_dict) <- paste0(names(proc_dict),"-Corrected")
 proc_dict <- lapply(proc_dict,function(x){colnames(x) <- extract_entrez(colnames(x)); return(x)})
@@ -45,16 +44,16 @@ control_scaling <- function(gene_effect_mat,pos_set_ids,neg_set_ids){
 }
 
 #Get non-essential genes
-nonessential.genes <- fread("data/raw/control-nonessential-genes.csv",sep=",")
+nonessential.genes <- fread(file.path(data_raw,"control-nonessential-genes.csv"),sep=",")
 neg_set_ids <- extract_entrez(nonessential.genes$gene) 
 
 #Get core essential genes
-ceg <- fread("data/raw/control-essential-genes-core.csv",sep=",")
+ceg <- fread(file.path(data_raw,"control-essential-genes-core.csv"),sep=",")
 ceg <- ceg$gene
 pos_set_ids <- extract_entrez(ceg)
 
 file_dict <- lapply(file_dict,function(x){control_scaling(x,pos_set_ids,neg_set_ids)})
-saveRDS(file_dict,file="data/processed/processed_unprocessed_scaled_gene_effects.rds")
+saveRDS(file_dict,file=file.path(data_processed,"processed_unprocessed_scaled_gene_effects.rds"))
 
 
 #Pearson correlation
@@ -126,9 +125,7 @@ plot_vals$status[plot_vals$type == "Processed-Processed"] <- "Processed"
 plot_vals$var_bin <- "0-75"
 plot_vals$var_bin[plot_vals$perc_bin == "75-100"] <- "75-100"
 
-mypal = ggsci::pal_npg()(9)
-mypal <- mypal[c(3,9)]
-names(mypal) <- c("Processed","Unprocessed")
+mypal <- c("Processed"="#00A087FF","Unprocessed"="#7E6148FF" )
 
 plot_vals %<>% subset(., group == "RNAi-CRISPR")
 plot_vals$experiment <- factor(plot_vals$experiment,levels=c("KY_Achilles","Avana_Achilles","Avana_DRIVE","KY_DRIVE"))
@@ -146,7 +143,7 @@ ggplot(plot_vals, aes(x=experiment, y=pearson_r, fill=status)) +
   # theme(axis.text.x = element_text(angle = 45)) +
   theme(legend.position = "none") +
   facet_grid(.~var_bin, scales = "free", space = "free") 
-ggsave("figures/selecting_datasets_proc_vs_unproc_dataset_cor_boxplot.pdf",height=2.5,width=4)
+ggsave(file.path("figures","selecting_datasets_proc_vs_unproc_dataset_cor_boxplot.pdf"),height=2.5,width=4)
 
 
 
