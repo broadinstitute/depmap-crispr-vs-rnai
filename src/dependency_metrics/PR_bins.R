@@ -24,6 +24,6 @@ res <- purrr::map_df(data,get_bins) %>%
 res$`numDeps(50-100)` <- rowSums(select(res,one_of(c("numDeps(50-90)","numDeps(90-100)"))))
 res$depCL_frac <- res$`numDeps(50-100)` / (res$`numDeps(0-50)` + res$`numDeps(50-100)`)
 
-res %<>% select(.,`Row.name`,depCL_frac,strong_depCL_count=`numDeps(90-100)`)
+# res %<>% select(.,`Row.name`,depCL_frac,strong_depCL_count=`numDeps(90-100)`)
 
 write_csv(res,path=out_file)

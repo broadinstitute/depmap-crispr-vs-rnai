@@ -6,7 +6,10 @@ args <- commandArgs(trailingOnly = TRUE)
 data_file <- args[1]
 out_file <- args[2]
 out_file_list <- args[3]
-data <- fread(data_file) %>% column_to_rownames(.,var="V1")
+# data <- fread(data_file) %>% column_to_rownames(.,var="V1")
+data <- fread(data_file)
+row_col <- colnames(data)[1]
+data %<>% column_to_rownames(.,var=row_col)
 data <- t(data)
 
 rank_data <- plyr::aaply(data, .margins=2, rank, ties.method="min")
