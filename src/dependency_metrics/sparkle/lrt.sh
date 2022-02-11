@@ -26,8 +26,8 @@ out_file=$7
 
 
 #fetch results from cloud
-mkdir ${data_name}-LRT-tasks
-gsutil -m cp gs://tda/${job_name}/*/*.csv ${data_name}-LRT-tasks/
+mkdir -p data/processed/${data_name}-LRT-tasks
+cp data/processed/*_LRT_res.csv data/processed/${data_name}-LRT-tasks/
 
 #gather LRT results by rbind individual tasks
-Rscript src/dependency_metrics/compile_LRT_tasks.R $task_params ${data_name}-LRT-tasks $out_file
+Rscript src/dependency_metrics/compile_LRT_tasks.R $task_params data/processed/${data_name}-LRT-tasks $out_file
