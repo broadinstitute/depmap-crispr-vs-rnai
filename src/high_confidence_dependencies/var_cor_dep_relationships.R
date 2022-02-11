@@ -1,47 +1,30 @@
 
-data_raw <- file.path("data","raw")
-data_processed <- file.path("data","processed")
-source(file.path("src","id_utility.R"))
+source("src/packages_paths.R")
 
-cors_list <- list("crispr"=fread(file.path(data_processed,"CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv")),
-                  "rnai"=fread(file.path(data_processed,"RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv")))
+cors_list <- list("crispr"="CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv",
+                  "rnai"="RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv")
+cors_list <- lapply(cors_list,function(x){load_data(local_dir=data_processed,filename=x,data_type="table")})
+
 cors_list[["crispr"]]$entrez_id %<>% as.character(.)
 cors_list[["rnai"]]$entrez_id %<>% as.character(.)
 
-gs_list <- list("crispr_ky" = fread(file.path(data_raw,"gene-effect-scaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                "crispr_avana" = fread(file.path(data_raw,"gene-effect-scaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                "rnai_achilles" = fread(file.path(data_processed,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
-                "rnai_drive" = fread(file.path(data_processed,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.))
+gs_list_crispr <- list("crispr_ky" = "gene-effect-scaled-crispr-ky.csv",
+                       "crispr_avana" = "gene-effect-scaled-crispr-avana.csv")
+gs_list_crispr <- lapply(gs_list_crispr,function(x){load_data(local_dir=data_raw,filename=x,data_type="matrix")})
 
-# gene ID updates which were performed on RNAi datasets as part of target discovery pipeline
-# hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
-# hgnc$entrez_id %<>% as.character(.)
-# hgnc %<>% subset(.,locus_group == "protein-coding gene")
-# 
-# ach_gs <- gs_list[["rnai_achilles"]]
-# colnames(ach_gs) <- extract_entrez(colnames(ach_gs))
-# ach_gs <- ach_gs[,colnames(ach_gs) %in% hgnc$entrez_id]
-# colnames(ach_gs) <- entrez_to_cds(colnames(ach_gs),hgnc)
-# gs_list[["rnai_achilles"]] <- ach_gs
-# 
-# drive_gs <- gs_list[["rnai_drive"]]
-# colnames(drive_gs) <- extract_entrez(colnames(drive_gs))
-# drive_gs <- drive_gs[,colnames(drive_gs) %in% hgnc$entrez_id]
-# colnames(drive_gs) <- entrez_to_cds(colnames(drive_gs),hgnc)
-# gs_list[["rnai_drive"]] <- drive_gs
+gs_list_rnai <- list("rnai_achilles" = "gene-effect-scaled-rnai-achilles.csv",
+                     "rnai_drive" = "gene-effect-scaled-rnai-drive.csv")
+gs_list_rnai <- lapply(gs_list_rnai,function(x){load_data(local_dir=data_processed,filename=x,data_type="matrix")})
+gs_list <- c(gs_list_crispr,gs_list_rnai)
 
-pr_list <- list("crispr_ky" = fread(file.path(data_processed,"dependency-probability-crispr-ky.csv")),
-                "crispr_avana"=fread(file.path(data_processed,"dependency-probability-crispr-avana.csv")),
-                "rnai_achilles" = fread(file.path(data_processed,"dependency-probability-rnai-achilles.csv")),
-                "rnai_drive"= fread(file.path(data_processed,"dependency-probability-rnai-drive.csv")))
-pr_list <- lapply(pr_list,function(x){x %>% column_to_rownames(.,var="Row.name")})
+pr_list <- list("crispr_ky" = "dependency-probability-crispr-ky.csv",
+                "crispr_avana"="dependency-probability-crispr-avana.csv",
+                "rnai_achilles" = "dependency-probability-rnai-achilles.csv",
+                "rnai_drive"= "dependency-probability-rnai-drive.csv")
+pr_list <- lapply(pr_list,function(x){fread(file.path(data_processed,x)) %>% column_to_rownames(.,var="Row.name")})
 
 tech_dsets <- list("crispr"=c("crispr_ky","crispr_avana"),
                    "rnai"=c("rnai_achilles","rnai_drive"))
-
-# gene <- Reduce(intersect,lapply(gs_list,function(x){colnames(x)}))
-# gs_list <- lapply(gs_list,function(x){x[,gene]})
-# pr_list <- lapply(pr_list,function(x){x[,gene]})
 
 res_df <- list()
 for (dset in names(gs_list)){

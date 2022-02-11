@@ -1,8 +1,6 @@
 
 
-data_raw <- file.path("data","raw")
-data_processed <- file.path("data","processed")
-source(file.path("src","id_utility.R"))
+source("src/packages_paths.R")
 
 hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
 hgnc$entrez_id %<>% as.character(.)

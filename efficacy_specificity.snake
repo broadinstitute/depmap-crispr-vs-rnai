@@ -1,3 +1,6 @@
+# Processed data requirements from other workflows
+# "data/processed/mean_reagent_lfc.rds"
+
 # Outputs of this overall workflow are listed as inputs to the first rule since 
 # Snakemake uses the first rule to contruct the workflow DAG
 rule main_efficacy_specificity:
@@ -25,7 +28,7 @@ rule mean_LFC_library_benchmarks:
 	input:
 		"data/processed/mean_reagent_lfc.rds",
 		"data/raw/control-nonessential-genes.csv",
-		"data/raw/control-essential-genes-core.csv"
+		"data/raw/control-essential-genes-core.csv",
 		"data/raw/control-essential-genes-unbiased.csv",
 		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
 	output:
@@ -37,7 +40,7 @@ rule mean_LFC_combRNAi_benchmarks:
 	input:
 		"data/raw/lfc-unscaled-dict.rds",
 		"data/raw/control-nonessential-genes.csv",
-		"data/raw/control-essential-genes-core.csv"
+		"data/raw/control-essential-genes-core.csv",
 		"data/raw/control-essential-genes-unbiased.csv",
 		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv",
 		"data/raw/reagent-to-gene-map-sgrna.csv",
@@ -56,7 +59,7 @@ rule gene_effect_unscaled_benchmarks:
 		"data/raw/gene-effect-unscaled-rnai-drive.csv",
 		"data/raw/gene-effect-unscaled-rnai-achilles.csv",
 		"data/raw/control-nonessential-genes.csv",
-		"data/raw/control-essential-genes-core.csv"
+		"data/raw/control-essential-genes-core.csv",
 		"data/raw/control-essential-genes-unbiased.csv",
 		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
 	output:
@@ -81,7 +84,7 @@ rule gene_effect_scaled_benchmarks:
 		"data/processed/processed_unscaled_gene_effects.rds",
 		"data/raw/hgnc-complete-set.csv",
 		"data/raw/control-nonessential-genes.csv",
-		"data/raw/control-essential-genes-core.csv"
+		"data/raw/control-essential-genes-core.csv",
 		"data/raw/control-essential-genes-unbiased.csv",
 		"data/raw/depmap-omics-expression-rnaseq-tpm-19Q1.csv"
 	output:

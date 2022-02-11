@@ -1,11 +1,5 @@
 
-library(tidyverse)
-library(magrittr)
-library(data.table)
-
-data_raw <- file.path("data","raw")
-data_processed <- file.path("data","processed")
-source(file.path("src","id_utility.R"))
+source("src/packages_paths.R")
 
 gene_cor_recall_rank <- function(d1,d2,d1_name,d2_name,hgnc){
   
@@ -53,24 +47,35 @@ gene_cor_recall_rank <- function(d1,d2,d1_name,d2_name,hgnc){
   
 }
 
-crispr_ky_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
-crispr_avana_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
-rnai_achilles_gs <- fread(file.path(data_processed,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
-rnai_drive_gs <- fread(file.path(data_processed,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+# crispr_ky_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+# crispr_avana_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+# 
+# rnai_achilles_gs <- fread(file.path(data_processed,"gene-effect-scaled-rnai-achilles.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
+# rnai_drive_gs <- fread(file.path(data_processed,"gene-effect-scaled-rnai-drive.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.)
 
-hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
+gs_list_crispr <- list("crispr_ky_gs" = "gene-effect-scaled-crispr-ky.csv",
+                       "crispr_avana_gs" = "gene-effect-scaled-crispr-avana.csv")
+gs_list_crispr <- lapply(gs_list_crispr,function(x){load_data(local_dir=data_raw,filename=x,data_type="matrix")})
+
+gs_list_rnai <- list("rnai_achilles_gs" = "gene-effect-scaled-rnai-achilles.csv",
+                     "rnai_drive_gs" = "gene-effect-scaled-rnai-drive.csv")
+gs_list_rnai <- lapply(gs_list_rnai,function(x){load_data(local_dir=data_processed,filename=x,data_type="matrix")})
+gs_list <- c(gs_list_crispr,gs_list_rnai)
+
+# hgnc <- fread(file.path(data_raw,"hgnc-complete-set.csv"))
+hgnc <- load_data(local_dir=data_raw,filename="hgnc-complete-set.csv",data_type="table")
 hgnc$entrez_id %<>% as.character()
 
 comparisons <- list(
   "CRISPR-CRISPR"=list("d1_name"="CRISPR-Avana",
                        "d2_name"="CRISPR-KY",
-                       "d1"=crispr_avana_gs,
-                       "d2"=crispr_ky_gs,
+                       "d1"=gs_list[["crispr_avana_gs"]],
+                       "d2"=gs_list[["crispr_ky_gs"]],
                        "hgnc"=hgnc),
   "RNAi-RNAi"=list("d1_name"="RNAi-Achilles",
                    "d2_name"="RNAi-DRIVE",
-                   "d1"=rnai_achilles_gs,
-                   "d2"=rnai_drive_gs,
+                   "d1"=gs_list[["rnai_achilles_gs"]],
+                   "d2"=gs_list[["rnai_drive_gs"]],
                    "hgnc"=hgnc))
 
 for (comp in names(comparisons)){

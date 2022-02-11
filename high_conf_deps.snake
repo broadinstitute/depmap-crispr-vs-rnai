@@ -1,3 +1,5 @@
+# Resources: 8GB memory 
+
 # Processed data requirements from other workflows
 # "data/processed/gene-effect-scaled-rnai-achilles.csv"
 # "data/processed/gene-effect-scaled-rnai-drive.csv"
@@ -75,6 +77,8 @@ rule correlation_between_libraries:
 
 rule gene_effect_vs_probability:
 	input:
+		"data/processed/CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv",
+		"data/processed/RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv",
 		"data/raw/hgnc-complete-set.csv",
 		"data/raw/gene-effect-scaled-crispr-avana.csv",
 		"data/raw/gene-effect-scaled-crispr-ky.csv",

@@ -1,15 +1,9 @@
 
-library(tidyverse)
-library(magrittr)
-library(data.table)
+source("src/packages_paths.R")
 
 library(cowplot)
 library(grid)
 library(gridExtra)
-
-data_raw <- file.path("data","raw")
-data_processed <- file.path("data","processed")
-source(file.path("src","id_utility.R"))
 
 gene_scores <- list(all=list(crispr_avana = fread(file.path(data_raw,"gene-effect-scaled-crispr-avana.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),
                     crispr_ky = fread(file.path(data_raw,"gene-effect-scaled-crispr-ky.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix(.),

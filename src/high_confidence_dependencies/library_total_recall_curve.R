@@ -1,8 +1,6 @@
+source("src/packages_paths.R")
 library(ggrepel)
 #requires matrixStats
-
-data_raw <- file.path("data","raw")
-data_processed <- file.path("data","processed")
 
 results_list <- list()
 

@@ -2,7 +2,7 @@
 
 source("src/packages_paths.R")
 
-file_dict <- readRDS(file_dict,file=file.path(data_raw,"lfc-unscaled-dict.rds"))
+file_dict <- readRDS(file=file.path(data_raw,"lfc-unscaled-dict.rds"))
 
 sgrna_map <- fread(file.path(data_raw,"reagent-to-gene-map-sgrna.csv"))
 shrna_map <- fread(file.path(data_raw,"reagent-to-gene-map-shrna.csv"))

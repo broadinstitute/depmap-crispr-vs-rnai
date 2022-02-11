@@ -11,7 +11,11 @@ load_local <- function(file_path,data_type){
   if (data_type == "table"){
     return(fread(file_path))
   } else if (data_type == "matrix"){
-    return(fread(file_path) %>% column_to_rownames(.,var=colnames(.)[1]))
+    tmp_file <- fread(file_path)
+    row_col <- colnames(tmp_file)[1]
+    tmp_file %<>% column_to_rownames(.,var=row_col)
+    tmp_file %<>% as.matrix(.)
+    return(tmp_file)
   } else {
     stop("Unknown data type")
   }
@@ -31,11 +35,12 @@ load_data <- function(local_dir,filename,data_type,figshare_mapping_dict=figshar
   local_file <- file.path(local_dir,filename)
   
   #Download file from Figshare if it doesn't exist locally
-  if (!file.exists(local_file)){
-    
-    get_figshare_file(local_dir,filename)
-    
-  } 
+  # if (!file.exists(local_file)){
+  #   
+  #   get_figshare_file(local_dir,filename)
+  #   
+  # } 
   
   return(load_local(file_path=local_file,data_type=data_type))
 }
+

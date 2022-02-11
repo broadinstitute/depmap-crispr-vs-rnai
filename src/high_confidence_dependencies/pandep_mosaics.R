@@ -1,8 +1,7 @@
 
-library(ggmosaic)
+source("src/packages_paths.R")
 
-data_raw <- file.path("data","raw")
-data_processed <- file.path("data","processed")
+library(ggmosaic)
 
 #### CRISPR pan-dependency
 

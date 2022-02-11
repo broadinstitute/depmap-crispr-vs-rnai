@@ -1,7 +1,5 @@
 
-data_raw <- file.path("data","raw")
-data_processed <- file.path("data","processed")
-source(file.path("src","id_utility.R"))
+source("src/packages_paths.R")
 
 results <- fread(file.path(data_processed,"library_agreement.csv"))
 stable <- dplyr::select(results,symbol,entrez_id)
