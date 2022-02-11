@@ -2,7 +2,7 @@
 library(purrr)
 library(tidyverse)
 library(magrittr)
-library(MASS) 
+library(MASS)
 library(sn)
 library(data.table)
 library(readr)
@@ -18,13 +18,13 @@ data <- fread(data_file) %>% column_to_rownames(.,var="Row.name")
 
 if (is.na(start_index)){
   start_index <- 0
-} 
+}
 
 if (is.na(end_index)){
   end_index <- ncol(data)
 }
 
-suffix <- paste0("-",start_index,"-",end_index)
+suffix <- paste0("-",start_index,"-",end_index,'_LRT_res')
 prefix <- file_path_sans_ext(out_file)
 out_file <- paste0(prefix,suffix,".",file_ext(out_file))
 
@@ -53,7 +53,7 @@ LRT_test <- function(vec) {
       logLik %>%
       as.numeric()
   }, error = function(e) {
-    
+
     print('Default fit failed, trying set nu values')
     nu_range <- c(2, 5, 10, 25, 50, 100, 250, 500, 1000)
     i = 1; unsolved = T

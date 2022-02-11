@@ -2,7 +2,7 @@
 set -e
 
 #sparklespray requirements
-sparkles_config=$1 
+sparkles_config=$1
 job_name=$2
 task_filelist=$3
 task_params=$4
@@ -14,22 +14,20 @@ targets=$5
 data_name=$6
 out_file=$7
 
-#Submit job
-/usr/local/envs/sparkles/bin/sparkles --config $sparkles_config \
-	sub --no-wait \
-	--clean \
-	-n $job_name \
-	-u '@'$task_filelist \
-	--params $task_params \
-	Rscript '^src/dependency_metrics/LRT.R' $targets '{start}' '{end}' $out_file
+{
+    read
+    while IFS=',', read -r start end
+    do
+			echo "Start : $start"
+			echo "End : $end"
+			Rscript 'src/dependency_metrics/LRT.R' $targets $start $end $out_file
+		done
+} < $task_params
 
-#Increases nodes
-/usr/local/envs/sparkles/bin/sparkles addnodes $job_name 20
-/usr/local/envs/sparkles/bin/sparkles status --wait $job_name
 
 #fetch results from cloud
-mkdir ${data_name}-LRT-tasks
-gsutil -m cp gs://tda/${job_name}/*/*.csv ${data_name}-LRT-tasks/
+mkdir -p data/processed/${data_name}-LRT-tasks
+cp data/processed/*_LRT_res.csv data/processed/${data_name}-LRT-tasks/
 
 #gather LRT results by rbind individual tasks
-Rscript src/dependency_metrics/compile_LRT_tasks.R $task_params ${data_name}-LRT-tasks $out_file
+Rscript src/dependency_metrics/compile_LRT_tasks.R $task_params data/processed/${data_name}-LRT-tasks $out_file
