@@ -1,6 +1,8 @@
 
 source("src/packages_paths.R")
 
+library(ggrepel)
+
 t1 <- fread(file.path("tables","Supplemental-Table-1.csv"))
 t1$entrez_id %<>% as.character(.)
 t1 %<>% subset(.,high_confidence)

@@ -33,6 +33,7 @@ install.packages('viridis') #0.6.2
 install.packages('ggsci') #2.9
 install.packages('ggridges') #0.5.3
 install.packages('ggbeeswarm') #0.6.0
+install.packages('ggExtra') #0.9
 
 install.packages('randomForest') #4.6-14
 install.packages('pROC') #1.18.0

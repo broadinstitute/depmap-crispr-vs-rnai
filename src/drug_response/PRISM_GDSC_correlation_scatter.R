@@ -1,6 +1,8 @@
 
 source("src/packages_paths.R")
 
+library(ggrepel)
+
 univariate_res <- fread(file.path(data_processed,"drug-screen-genetic-targets-correlations.csv"))
 
 for (dset in c("gdsc","prism")){

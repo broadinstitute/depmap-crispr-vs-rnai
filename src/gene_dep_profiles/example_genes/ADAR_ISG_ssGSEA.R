@@ -3,7 +3,7 @@
 
 source("src/packages_paths.R")
 
-crispr_gs <- fread(file.path(data_raw,"gene-effect-scaled-crispr-matched.csv")) %>% column_to_rownames(.,var="V1") %>% as.matrix()
+crispr_gs <- load_data(local_dir = data_raw,"gene-effect-scaled-crispr-matched.csv",data_type="matrix")
 
 #Exclude blood cell lines
 master <- fread(file.path(data_raw,"depmap-cell-line-annotations-v131.csv"))
@@ -11,7 +11,7 @@ master %<>% subset(.,`Primary Site` == "haematopoietic_and_lymphoid_tissue")
 
 crispr_gs <- crispr_gs[!(rownames(crispr_gs) %in% master$DepMap_ID),]
 
-exp <- fread(file.path(data_raw,"depmap-omics-expression-rnaseq-tpm-18Q4.csv")) %>% column_to_rownames(.,var="Row.name") %>% as.matrix(.)
+exp <- load_data(local_dir = data_raw,"depmap-omics-expression-rnaseq-tpm-18Q4.csv",data_type="matrix")
 exp <- exp[rownames(crispr_gs),]
 
 ifn <- fread(file.path(data_raw,"gene-set-library.csv"))

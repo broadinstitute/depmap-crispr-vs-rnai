@@ -1,6 +1,8 @@
 
 source("src/packages_paths.R")
 
+library(ggrepel)
+
 univariate_res <- fread(file.path(data_processed,"drug-screen-genetic-targets-correlations.csv"))
 summary <- subset(univariate_res,drug_dataset == "ctd2")
 summary %<>% subset(.,best_drug_target_cor)

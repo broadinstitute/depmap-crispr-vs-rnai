@@ -1,3 +1,7 @@
+# Processed data requirements from other workflows
+# "tables/" + "Supplemental-Table-1.csv"
+# "tables/" + "Supplemental-Table-2.csv"
+
 # Outputs of this overall workflow are listed as inputs to the first rule since 
 # Snakemake uses the first rule to contruct the workflow DAG
 rule main_codependency:

@@ -2,9 +2,9 @@
 library(httr)
 
 # Get mapping of local directories to figshare from config json
-figshare_mapping <- list("data/raw"="https://figshare.com/s/24131e4e0b894826036e",
-                         "data/processed"="https://figshare.com/s/94f7ce1b3820c2c7d64d",
-                         "tables"="https://figshare.com/s/d14f530bd1d4cdba4cd6")
+figshare_mapping <- list("data/raw"="https://figshare.com/",
+                         "data/processed"="https://figshare.com/",
+                         "tables"="https://figshare.com/")
 
 load_local <- function(file_path,data_type){
   

@@ -1,6 +1,8 @@
 
 source("src/packages_paths.R")
 
+library(ggrepel)
+
 t1 <- fread(file.path("tables","Supplemental-Table-1.csv"))
 t1$entrez_id %<>% as.character(.)
 t1 %<>% subset(.,high_confidence)
@@ -20,7 +22,9 @@ var_df$color_group[var_df$CRISPR_HVD | var_df$RNAi_HVD] <- "darkblue"
 max_var <- max(c(var_df$CRISPR_dependency_variance,var_df$RNAi_dependency_variance))
 
 point_labels <- subset(var_df,(CRISPR_dependency_variance > .12) | (RNAi_dependency_variance > .12) | ((CRISPR_dependency_variance > .09) & (RNAi_dependency_variance > .09)))
-point_label_font <- 6
+
+point_label_font = 6
+quadrant_label_font = 11
 
 crispr_only <- subset(var_df,CRISPR_HVD & !RNAi_HVD)
 crispr_only_count <- nrow(crispr_only)

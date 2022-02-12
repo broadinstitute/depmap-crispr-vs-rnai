@@ -7,7 +7,7 @@
 # Snakemake uses the first rule to contruct the workflow DAG
 rule main_pandependency_agreement:
 	input:
-		"data/processed" + "pandependency_agreement_enrichment_of_shared_or_distinct.csv",
+		"data/processed/" + "pandependency_agreement_enrichment_of_shared_or_distinct.csv",
 		"data/processed/" + "modeling_pandep_status_predictive_features.rds",
 		"data/processed/" + "rf_pandep_class_models_wFeats.rds",
 		"figures/" + "pandependency_agreement_CRISPR_euler_venn.pdf",
@@ -47,15 +47,15 @@ rule geneset_enrichment_of_pandeps:
 		"figures/" + "pandependency_agreement_GO_odds_ratio_scatter.pdf",
 		"figures/" + "pandependency_agreement_HALLMARK_odds_ratio_scatter.pdf",
 		"figures/" + "pandependency_agreement_KEGG_odds_ratio_scatter.pdf",
-		"data/processed" + "pandependency_agreement_enrichment_of_shared_or_distinct.csv"
+		"data/processed/" + "pandependency_agreement_enrichment_of_shared_or_distinct.csv"
 	shell:
-		"Rscript geneset_enrichment_shared_vs_distinct.R"
+		"Rscript src/pandependency_agreement/geneset_enrichment_shared_vs_distinct.R"
 
 rule ROC_predicting_CRISPR_pandep_class:
 	input:
 		"data/raw/hgnc-complete-set.csv",
 		"data/raw/gene-effect-scaled-rnai-matched.csv",
-		"data/raw/control-essential-genes-unbiased.csv"
+		"data/raw/control-essential-genes-unbiased.csv",
 		"data/processed/library_agreement.csv"
 	output:
 		"figures/pandependency_agreement_ROC_predicting_CRISPR_class.pdf"

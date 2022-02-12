@@ -3,14 +3,15 @@ set.seed(42)
 source("src/packages_paths.R")
 
 library(ggrepel)
+library(grid)
 
 # require(fgsea)
 # require(cowplot)
 # require(gridExtra)
 
 #get LRTs
-crispr_lrt <- fread(file.path(data_processed,"crispr-matched-LRT.csv")) %>% rename(CRISPR_LRT=LRT)
-rnai_lrt <- fread(file.path(data_processed,"rnai-matched-LRT.csv")) %>% rename(RNAi_LRT=LRT)
+crispr_lrt <- fread(file.path(data_processed,"gene-effect-LRT-crispr-matched.csv")) %>% rename(CRISPR_LRT=LRT)
+rnai_lrt <- fread(file.path(data_processed,"gene-effect-LRT-rnai-matched.csv")) %>% rename(RNAi_LRT=LRT)
 
 master_table <- inner_join(crispr_lrt,rnai_lrt,by="Row.name")
 master_table %<>% add_column(entrez_id=extract_entrez(master_table$Row.name),.before=1)

@@ -1,3 +1,6 @@
+# Processed data requirements from other workflows
+# "tables/" + "Supplemental-Table-2.csv"
+
 # Outputs of this overall workflow are listed as inputs to the first rule since 
 # Snakemake uses the first rule to contruct the workflow DAG
 rule main_drug_response:
@@ -119,7 +122,7 @@ rule ctd2_correlation_examples:
 		"data/raw/" + "gene-effect-scaled-crispr-matched.csv",
 		"data/raw/" + "gene-effect-scaled-rnai-matched.csv",
 		"data/processed/" + "drug-screen-viability-filtered-noPC1-ctd2.csv",
-		"data/processed/" + "drug-screen-viability-info-ctd2.csv",
+		"data/raw/" + "drug-screen-viability-info-ctd2.csv",
 		"data/raw/" + "drug-screen-target-annotations-rephub.csv"
 	output:
 		"figures/drug_response_CTD2_navitoclax_BCL2L1.pdf",
@@ -134,11 +137,11 @@ rule prism_correlation_example:
 		"data/raw/" + "gene-effect-scaled-crispr-matched.csv",
 		"data/raw/" + "gene-effect-scaled-rnai-matched.csv",
 		"data/processed/" + "drug-screen-viability-filtered-noPC1-prism.csv",
-		"data/processed/" + "drug-screen-viability-info-prism.csv"
+		"data/raw/" + "drug-screen-viability-info-prism.csv"
 	output:
 		"figures/drug_response_PRISM_CHKinhibitor_CHEK1.pdf"
 	shell:
-		"Rscript src/drug_response/PRISM_example_correlations_CHEK1.R"
+		"Rscript src/drug_response/PRISM_example_correlation_CHEK1.R"
 
 rule fraction_of_top_cors_faceted_by_pandep:
 	input:

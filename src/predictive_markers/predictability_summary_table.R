@@ -25,4 +25,4 @@ hgnc$entrez_id %<>% as.character(.)
 summary_pred %<>% add_column(.,symbol=entrez_to_symbol(summary_pred$entrez_id,hgnc),.before=1)
 
 summary_pred %<>% rename(.,target_id=Gene)
-write_csv(summary_pred,file.path("tables","Supplemental-Table-3a.csv"))
+write_csv(summary_pred,file.path("tables","Supplemental-Table-3.csv"))

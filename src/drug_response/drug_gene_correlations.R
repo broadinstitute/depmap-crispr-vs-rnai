@@ -32,7 +32,7 @@ genetic_data <- lapply(genetic_data,function(x){x[,colnames(x) %in% keep_genes]}
 
 #Long format compound, gene target pairs
 target_annotations <- fread(file.path(data_processed,"drug-screen-target-annotations-rephub-shared.csv"))
-target_annotations %<>% subset(.,target_id %in% colnames(crispr))
+target_annotations %<>% subset(.,target_id %in% colnames(genetic_data[["crispr"]]))
 
 #### Drug dataset specific
 across_drug_datasets <- list()
