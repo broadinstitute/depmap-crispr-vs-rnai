@@ -3,15 +3,12 @@
 source("src/packages_paths.R")
 
 file_dict <- readRDS(file=file.path(data_raw,"lfc-unscaled-dict.rds"))
+reagent_dict <- file_dict[["reagent_map"]]
+file_dict <- file_dict[c("CRISPR","RNAi")]
 
-sgrna_map <- fread(file.path(data_raw,"reagent-to-gene-map-sgrna.csv"))
-shrna_map <- fread(file.path(data_raw,"reagent-to-gene-map-shrna.csv"))
-
-sgrna_map %<>% subset(.,reagent %in% rownames(file_dict[["CRISPR"]]))
-shrna_map %<>% subset(.,reagent %in% rownames(file_dict[["RNAi"]]))
-
-genes <- intersect(sgrna_map$entrez_id,shrna_map$entrez_id)
-cls <- colnames(file_dict[[1]])
+genes <- intersect(reagent_dict[["CRISPR"]]$entrez_id,reagent_dict[["RNAi"]]$entrez_id)
+cls <- colnames(file_dict[["RNAi"]])
+stopifnot(all(cls == colnames(file_dict[["CRISPR"]])))
 
 # Core essentials
 ceg <- fread(file.path(data_raw,"control-essential-genes-core.csv"),sep=",")
