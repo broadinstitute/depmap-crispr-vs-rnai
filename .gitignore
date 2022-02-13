@@ -35,5 +35,4 @@ report_files/*
 .DS_Store
 .gitignore~
 
-#Project files
-data/
+
