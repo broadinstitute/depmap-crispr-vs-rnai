@@ -1,12 +1,157 @@
-
 include: "selecting_datasets.snake"
 include: "td_metrics.snake"
 include: "high_conf_deps.snake"
 include: "efficacy_specificity.snake"
+include: "gene_dep_profiles.snake"
+include: "pandependency_agreement.snake"
+include: "ensemble_prediction.snake"
+include: "predictive_markers.snake"
+include: "drug_response.snake"
+include: "codependency.snake"
 
-rule get_figshare_data:
-	output:
-		"data/raw/hgnc-complete-set.csv",
-		"data/raw/collection.zip"
-	shell:
-		"Rscript src/figshare_downloader.R"
+rule main_task:
+	input:
+		#selecting datasets
+		"data/processed/" + "mean_reagent_lfc.rds", 
+		"data/processed/" + "processed_unprocessed_scaled_gene_effects.rds",
+		"figures/" + "selecting_datasets_reagents_SSMD_per_dataset.pdf",
+		"figures/" + "selecting_datasets_reagents_SSMD_CL_example.pdf",
+		"figures/" + "selecting_datasets_reagents_pairwise_cors_boxplot.pdf",
+		"figures/" + "selecting_datasets_processed_vs_unproc_AUC.pdf",
+		"figures/" + "selecting_datasets_proc_vs_unproc_dataset_cor_boxplot.pdf",
+		"figures/" + "selecting_datasets_proc_vs_unprc_topcor_recall.pdf",
+		"tables/" + "Supplemental-Table-2.csv",
+		#td metrics
+		"data/processed/gene-effect-scaled-rnai-achilles.csv",
+		"data/processed/gene-effect-scaled-rnai-drive.csv",
+		"data/processed/dependency-probability-crispr-ky.csv",
+		"data/processed/dependency-probability-crispr-avana.csv",
+		"data/processed/dependency-probability-rnai-achilles.csv",
+		"data/processed/dependency-probability-rnai-drive.csv",
+		"data/processed/dependency-probability-crispr-matched.csv",
+		"data/processed/dependency-probability-rnai-matched.csv",
+		"data/processed/pandependency-score-crispr-avana.csv",
+		"data/processed/pandependency-score-crispr-ky.csv",
+		"data/processed/pandependency-score-rnai-achilles.csv",
+		"data/processed/pandependency-score-rnai-drive.csv",
+		"data/processed/gene-effect-LRT-crispr-matched.csv",
+		"data/processed/gene-effect-LRT-rnai-matched.csv",
+		#high confidence dependencies
+		"data/processed/" + "multilib_ce_percentile_results.csv", 
+		"data/processed/" + "CRISPR-Avana_vs_CRISPR-KY_cor_recall_vals.csv",
+		"data/processed/" + "RNAi-Achilles_vs_RNAi-DRIVE_cor_recall_vals.csv",
+		"data/processed/" + "library_agreement.csv",
+		"figures/" + "pandependency_90th_percentile_ranks_CRISPR.pdf",
+		"figures/" + "pandependency_90th_percentile_ranks_RNAi.pdf",
+		"figures/" + "pandependency_90th_percentile_ranks_RNAi_benchmark.pdf",
+		"figures/" + "pandependency_90th_percentile_ranks_CRISPR_benchmark.pdf",
+		"figures/" + "high_confidence_depFrac_vs_correlation.pdf",
+		"figures/" + "high_confidence_depFrac_vs_variance.pdf",
+		"figures/" + "high_confidence_crispr_pandep_mosaic.pdf",
+		"figures/" + "high_confidence_rnai_pandep_mosaic.pdf",
+		"figures/" + "high_confidence_crispr_total_recall_curve.pdf",
+		"figures/" + "high_confidence_rnai_total_recall_curve.pdf",
+		"figures/" + "high_confidence_crispr_nodep_mosaic.pdf",
+		"figures/" + "high_confidence_rnai_nodep_mosaic.pdf",
+		"tables/" + "Supplemental-Table-1.csv",
+		#efficacy specificity
+		"figures/" + "efficacy_specificity_scatter_mean_gene_effect_legend.pdf", 
+		"figures/" + "efficacy_specificity_mean_reagent_LFC.pdf",
+		"figures/" + "efficacy_specificity_mean_reagent_LFC_combRNAi.pdf",
+		"data/processed/" + "mean_reagent_combRNAi_boxplot_params.rds",
+		"data/processed/" + "processed_unscaled_gene_effects.rds",
+		"figures/" + "efficacy_specificity_processed_zscored_benchmark_boxplots.pdf",
+		"figures/" + "efficacy_specificity_processed_zscored_benchmark_sets_combRNAi.pdf",
+		"figures/" + "efficacy_specificity_processed_scaled_benchmark_sets.pdf",
+		#gene dependency profiles
+		"figures/" + "gene_deps_profiles_WRN_LRT_RNAi_illustration.pdf", 
+		"figures/" + "gene_deps_profiles_WRN_LRT_CRISPR_illustration.pdf",
+		"figures/" + "gene_deps_profiles_LRT_onco_enrichment.pdf",
+		"figures/" + "gene_deps_profiles_LRT_tsg_enrichment.pdf",
+		"figures/" + "gene_deps_profiles_density_joyplot.pdf",
+		"figures/" + "gene_deps_profiles_abs_bars.pdf",
+		"figures/" + "gene_deps_profiles_flow_diagram.pdf",
+		"figures/" + "gene_deps_profiles_totalfrac_perCL_stackedbar.pdf",
+		"figures/" + "gene_deps_profiles_totalfrac_per_CL_byDisease.pdf",
+		"figures/" + "gene_deps_profiles_depfrac_per_CL_byDisease.pdf",
+		"figures/" + "gene_deps_profiles_BRAF_hotspot_density.pdf",
+		"figures/" + "gene_deps_profiles_ADAR_IFN.pdf",
+		"figures/" + "gene_deps_profiles_pandependency_scatter.pdf",
+		"figures/" + "gene_deps_profiles_variance_scatter.pdf",
+		"figures/" + "gene_deps_profiles_LRT_scatter.pdf",
+		"figures/" + "gene_deps_profiles_depCount_scatter_1x2_grid.pdf",
+		"figures/" + "gene_deps_profiles_probabilities_density2d_2x3_grid.pdf",
+		#pandependency agreement
+		"data/processed/" + "pandependency_agreement_enrichment_of_shared_or_distinct.csv", 
+		"data/processed/" + "modeling_pandep_status_predictive_features.rds",
+		"data/processed/" + "rf_pandep_class_models_wFeats.rds",
+		"figures/" + "pandependency_agreement_CRISPR_euler_venn.pdf",
+		"figures/" + "pandependency_agreement_RNAi_euler_venn.pdf",
+		"figures/" + "pandependency_agreement_BIOCARTA_odds_ratio_scatter.pdf",
+		"figures/" + "pandependency_agreement_GO_odds_ratio_scatter.pdf",
+		"figures/" + "pandependency_agreement_HALLMARK_odds_ratio_scatter.pdf",
+		"figures/" + "pandependency_agreement_KEGG_odds_ratio_scatter.pdf",
+		"figures/" + "pandependency_agreement_ROC_predicting_CRISPR_class.pdf",
+		"figures/" + "pandependency_agreement_dependency_vs_expression_boxplot.pdf",
+		"figures/" + "pandependency_agreement_RNAi_pandep_exp_rnai_cor_hist.pdf",
+		"figures/" + "pandependency_agreement_PSMC3_scatter.pdf",
+		"figures/" + "pandependency_agreement_RNAi_pandep_relative_expression.pdf",
+		"figures/" + "pandependency_agreement_model_allfeat_depth_distribution.pdf",
+		"figures/" + "pandependency_agreement_model_allfeat_example_tree.pdf",
+		"figures/" + "pandependency_agreement_model_ROC.pdf",
+		#ensemble prediction
+		"data/processed/ensemble-prediction-summary-crispr-matched.csv", 
+		"data/processed/ensemble-prediction-summary-rnai-matched.csv",
+		#predictive markers
+		"tables/" + "Supplemental-Table-3.csv", 
+		"data/processed/" + "hgnc_gene_arm_location.csv",
+		"data/processed/" + "CYCLOPS_annotations.csv",
+		"figures/" + "predictive_markers_gw_accurate_model_count_barplot.pdf",
+		"figures/" + "predictive_markers_smoothed_accuracy_funcOf_depFrac.pdf",
+		"figures/" + "predictive_markers_CYCLOPS_or_related_hist.pdf",
+		"figures/" + "predictive_markers_CYCLOPS_hist.pdf",
+		"figures/" + "predictive_markers_PRMT5_boxplot.pdf",
+		"figures/" + "predictive_markers_RBBP4_density2d_smooth.pdf",
+		"figures/" + "predictive_markers_RAB6A_boxplot.pdf",
+		#drug response
+		"data/processed/" + "drug-screen-viability-filtered-ctd2.csv", 
+		"data/processed/" + "drug-screen-viability-filtered-gdsc.csv",
+		"data/processed/" + "drug-screen-viability-filtered-prism.csv",
+		"data/processed/" + "drug-screen-target-annotations-rephub-shared.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-ctd2.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-gdsc.csv",
+		"data/processed/" + "drug-screen-viability-filtered-noPC1-prism.csv",
+		"data/processed/" + "drug-screen-genetic-targets-correlations.csv",
+		"figures/" + "drug_response_prism_best_cor_boxplot.pdf",
+		"figures/" + "drug_response_ctd2_best_cor_boxplot.pdf",
+		"figures/" + "drug_response_gdsc_best_cor_boxplot.pdf",
+		"figures/" + "drug_response_prism_drugs_with_top5_targets.pdf",
+		"figures/" + "drug_response_ctd2_drugs_with_top5_targets.pdf",
+		"figures/" + "drug_response_prism_top_dose_heatmap.pdf",
+		"figures/" + "drug_response_ctd2_top_dose_heatmap.pdf",
+		"figures/" + "drug_response_CTD2_correlation_scatter.pdf",
+		"figures/" + "drug_response_prism_correlation_scatter.pdf",
+		"figures/" + "drug_response_gdsc_correlation_scatter.pdf",
+		"figures/" + "drug_response_CTD2_navitoclax_BCL2L1.pdf",
+		"figures/" + "drug_response_CTD2_BMS-387032_CDK2.pdf",
+		"figures/" + "drug_response_CTD2_MK-1775_WEE1.pdf",
+		"figures/" + "drug_response_CTD2_AZD7762_CHEK1.pdf",
+		"figures/" + "drug_response_PRISM_CHKinhibitor_CHEK1.pdf",
+		"figures/" + "drug_response_fraction_of_top_cors_faceted_by_pandep.pdf", 
+		#codependency
+		"data/processed/" + "codependency_CRISPR_pearson_baseline.rds", 
+		"data/processed/" + "codependency_RNAi_pearson_baseline.rds",
+		"data/processed/" + "CRISPR-RNAi_CRISPR-weight-matrix.rds",
+		"data/processed/" + "CRISPR-RNAi_RNAi-weight-matrix.rds",
+		"data/processed/" + "codependency-CRISPR-RNAi-SNF.rds",
+		"data/processed/" + "codependency_network_enrichment.csv",
+		"figures/" + "codependency_enrichment_boxplot_pandep_facet_summary.pdf",
+		"figures/" + "codependency_CRISPR-RNAi-SNF_topN_barplot.pdf",
+		"figures/" + "codependency_CRISPR_MED16_network.pdf",
+		"figures/" + "codependency_CRISPR_RPS21_network.pdf",
+		"figures/" + "codependency_RNAi_MED16_network.pdf",
+		"figures/" + "codependency_RNAi_RPS21_network.pdf",
+		"figures/" + "codependency_SNF_MED16_network.pdf",
+		"figures/" + "codependency_SNF_RPS21_network.pdf"
+
+
