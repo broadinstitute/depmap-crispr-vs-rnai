@@ -20,6 +20,7 @@ feat_suffix="features"
 pred_suffix="predictions"
 data_name=${11}
 target=${12}
+output_dir=${13}
 
 {
     read
@@ -40,12 +41,13 @@ target=${12}
 				--start-col $start \
 				--end-col $end \
 				--feat-suffix $feat_suffix \
-				--pred-suffix $pred_suffix
+				--pred-suffix $pred_suffix \
+        --output-dir $output_dir
     done
 } < $task_params
 
 #Move results from proper folder
-mv data/temp data/processed/$data_name-$target
+#mv data/temp data/processed/$data_name-$target
 
 #compile tasks per model files
 Rscript src/ensemble_prediction_pipeline/compile_ensemble_tasks.R $task_params $feat_suffix $pred_suffix data/processed/$data_name-$target data/processed/$data_name $target

@@ -131,13 +131,14 @@ rule run_ensemble:
             "ensemble-sparkle-filelist-regress-{target}.csv"
     output:
         out_features = "data/processed/" + "ensemble-regress-{model}-features-{target}.csv",
-        out_predictions = "data/processed/" + "ensemble-regress-{model}-predictions-{target}.csv"
+        out_predictions = "data/processed/" + "ensemble-regress-{model}-predictions-{target}.csv",
     params:
         folds = "5",
         sparkles_config = ".sparkles",
         job_name = config["RUN-ID"] + "-Regress",
         data_name = "ensemble-regress",
         task_mode = config["TASK"],
+        out_dir = "data/processed/"+"ensemble-regress"+"-"+"{target}/",
         target = "{target}"
     shell:
-        "src/ensemble_prediction_pipeline/ensemble.sh {params.sparkles_config} {params.job_name} {input.sparkle_filelist} {input.sparkle_params} {input.model_config} {input.targets} {params.folds} {input.confounders} {input.feature_info} {params.task_mode} {params.data_name} {params.target}"
+        "src/ensemble_prediction_pipeline/ensemble.sh {params.sparkles_config} {params.job_name} {input.sparkle_filelist} {input.sparkle_params} {input.model_config} {input.targets} {params.folds} {input.confounders} {input.feature_info} {params.task_mode} {params.data_name} {params.target} {params.out_dir}"

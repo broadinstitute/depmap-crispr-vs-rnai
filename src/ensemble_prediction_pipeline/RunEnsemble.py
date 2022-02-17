@@ -72,6 +72,9 @@ def getParser():
         type=str,
         default='predictions.csv',
         help='File for writing predictions')
+    parser.add_argument('--output-dir',
+        type=str,
+        help='The output folder for storing the outputs')
     return parser
 
 
@@ -650,7 +653,7 @@ def run_model(X, Y, model, nfolds, feat_output, pred_output, start_col=0, end_co
 if __name__ == '__main__':
     args = getParser().parse_args()
 
-    Path("data/temp/").mkdir(parents=True, exist_ok=True)
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
     #Read the model definitions
     with open(args.model_config) as f:
@@ -704,7 +707,7 @@ if __name__ == '__main__':
         related_table.partner = [s.split(' ')[0] for s in related_table.partner]
         related_table.target = [s.split(' ')[0] for s in related_table.target]
 
-    outfile_feat = 'data/temp/' + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.feat_suffix + '.csv'
-    outfile_pred = 'data/temp/' + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.pred_suffix + '.csv'
+    outfile_feat = args.output_dir + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.feat_suffix + '.csv'
+    outfile_pred = args.output_dir + args.model + "_" + str(args.start_col) + "_" + str(args.end_col) + "_" + args.pred_suffix + '.csv'
 
     run_model(X, Y, model=model_def, nfolds=args.nfolds, feat_output=outfile_feat, pred_output=outfile_pred, task=task_mode, relation_table=related_table)
