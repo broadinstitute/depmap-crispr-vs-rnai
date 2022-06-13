@@ -112,3 +112,24 @@ rule RAB6A_example:
 		"figures/predictive_markers_RAB6A_boxplot.pdf"
 	shell:
 		"Rscript src/predictive_markers/RAB6A_example.R"
+
+#### New scripts
+# genetic_driver.R
+# expression_addiction.R
+# paralog.R
+# CYCLOPS.R
+# oncogene_addiction.R
+# oncoKB_synthetic_lethal.R
+# marker_class_count_barplot.R
+# marker_class_scatter.R
+
+#### New outputs
+# predictive_markers_class_scatter_genetic_driver.pdf
+# predictive_markers_class_scatter_expression_addiction.pdf
+# predictive_markers_class_scatter_paralog.pdf
+# predictive_markers_class_scatter_CYCLOPS.pdf
+# predictive_markers_class_scatter_oncogene_addiction.pdf
+# predictive_markers_class_scatter_synthetic_lethal.pdf
+# predictive_markers_class_barplot.pdf
+
+
