@@ -24,6 +24,15 @@ plot_df_rnai <- data.frame(CL=rownames(rnai_gs),
 plot_df <- rbind(plot_df_crispr,plot_df_rnai)
 plot_df$RAB6B_Loss <- plot_df$RAB6B_Exp < 1.385
 
+crispr_x <- subset(plot_df,(dataset == "CRISPR") & (RAB6B_Loss))$RAB6A_GS
+crispr_y <- subset(plot_df,(dataset == "CRISPR") & (!RAB6B_Loss))$RAB6A_GS
+
+rnai_x <- subset(plot_df,(dataset == "RNAi") & (RAB6B_Loss))$RAB6A_GS
+rnai_y <- subset(plot_df,(dataset == "RNAi") & (!RAB6B_Loss))$RAB6A_GS
+
+crispr_pval <- wilcox.test(crispr_x,crispr_y)$p.value
+rnai_pval <- wilcox.test(rnai_x,rnai_y)$p.value
+
 wes_pal <- c("TRUE"="black","FALSE"="#C7B19C")
 
 ggplot(plot_df, aes(x=dataset, y=RAB6A_GS, color=RAB6B_Loss)) +
@@ -35,7 +44,10 @@ ggplot(plot_df, aes(x=dataset, y=RAB6A_GS, color=RAB6B_Loss)) +
   ylab("RAB6A Gene Effect") + 
   theme(legend.position = "top") +
   theme(legend.text=element_text(size=7)) +
-  theme(legend.title=element_text(size=9))
+  theme(legend.title=element_text(size=9)) +
+  annotate("text", x = .5, y = .5, hjust = 0,label =paste0("P-value",
+                                                          "\nCRISPR: ",signif(crispr_pval,digits=2),
+                                                          "\nRNAi: ",signif(rnai_pval,digits=2)),size=2)
 
 ggsave(file.path("figures","predictive_markers_RAB6A_boxplot.pdf"),height=2,width=2.25)
 

@@ -21,6 +21,15 @@ plot_df_rnai <- data.frame(CL=rownames(rnai_gs),
 plot_df <- rbind(plot_df_crispr,plot_df_rnai)
 plot_df$MTAP_Loss <- plot_df$MTAP_CN < -2
 
+crispr_x <- subset(plot_df,(dataset == "CRISPR") & (MTAP_Loss))$PRMT5_GS
+crispr_y <- subset(plot_df,(dataset == "CRISPR") & (!MTAP_Loss))$PRMT5_GS
+
+rnai_x <- subset(plot_df,(dataset == "RNAi") & (MTAP_Loss))$PRMT5_GS
+rnai_y <- subset(plot_df,(dataset == "RNAi") & (!MTAP_Loss))$PRMT5_GS
+
+crispr_pval <- wilcox.test(crispr_x,crispr_y)$p.value
+rnai_pval <- wilcox.test(rnai_x,rnai_y)$p.value
+
 wes_pal <- c("TRUE"="black","FALSE"="#C7B19C")
 
 ggplot(plot_df, aes(x=dataset, y=PRMT5_GS, color=MTAP_Loss)) +
@@ -32,5 +41,10 @@ ggplot(plot_df, aes(x=dataset, y=PRMT5_GS, color=MTAP_Loss)) +
   xlab("") +
   ylab("PRMT5 Gene Effect") + 
   theme(legend.margin=margin(t = -.5, unit='cm')) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  annotate("text", x = 1, y = -2, hjust = 0,label =paste0("P-value",
+                                                  "\nCRISPR: ",signif(crispr_pval,digits=2),
+                                                  "\nRNAi: ",signif(rnai_pval,digits=2)),size=2)
+
+
 ggsave(file.path("figures","predictive_markers_PRMT5_boxplot.pdf"),height=2,width=2.25)
